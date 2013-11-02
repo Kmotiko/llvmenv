@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+
+import os
+home = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+libdir = os.path.join(home, 'src')
+
+import sys
+sys.path[0:0] = [
+  libdir,
+  ]
+
+import llvmenv_main
+if __name__ == '__main__':
+    sys.exit(llvmenv_main.main())
