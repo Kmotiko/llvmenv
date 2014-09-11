@@ -35,8 +35,8 @@ parser_install = \
     subparsers.add_parser('install', help='install llvm/clang')
 parser_install.add_argument('version', type=str, default='release_33', help='install version')    
 parser_install.add_argument('--opt', type=str, default='', help='configure option')    
-parser_install.add_argument('--no_delete_src_dir', action='store_true', default=False, help='don\'t delete checkout src after install')
-parser_install.add_argument('--no_delete_build_dir', action='store_true', default=False, help='don\'t delete build directory after install')
+parser_install.add_argument('--no-delete-src-dir', action='store_true', default=False, help='don\'t delete checkout src after install')
+parser_install.add_argument('--no-delete-build-dir', action='store_true', default=False, help='don\'t delete build directory after install')
 parser_install.add_argument('--generator', type=str, default='gnu', help='specify generator. default is gnu autotools')
 parser_install.add_argument('--builder', type=str, default='make', help='specify builder. default is make')
 

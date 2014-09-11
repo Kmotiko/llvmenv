@@ -68,6 +68,8 @@ class InstallSubcommand():
 
             return
         except Exception,e:
+            print type(e)
+            self.logger.error('except')
             self.logger.error(e.__args__)
         finally:
             ########################################
@@ -106,8 +108,6 @@ class InstallSubcommand():
             repo = repo_base + version
         else:
             repo = repo_base + '/tags/' + version
-            if self.has_final(repo):
-                repo = repo + '/final'
         cmd = ['svn', 'co']
         args = []
         args.append(repo)
@@ -129,33 +129,33 @@ class InstallSubcommand():
         ########################################
         # 
         #
-        llvmenv_home = os.getenv('LLVMENV_HOME')
-        if len(llvmenv_home) == 0:
+        if len(self.llvmenv_home) == 0:
             self.logger.error('env LLVMENV_HOME is not set')
             return False
 
-        self.logger.info('set home directory ... %s' % llvmenv_home)
+        self.logger.info('set home directory ... %s' % self.llvmenv_home)
 
         ########################################
         # checkout llvm
         #
         repo_base = 'http://llvm.org/svn/llvm-project/llvm/'
-        llvm = os.path.join(llvmenv_home, 'llvm_build', version , 'llvm')
-        self.checkout(repo_base, version, llvm)
+        llvm = os.path.join(self.llvmenv_home, 'llvm_build', version , 'llvm')
+        print llvm
+        self.checkout(repo_base, version.replace('.','/'), llvm)
 
         ########################################
         # checkout clang
         #
         repo_base = 'http://llvm.org/svn/llvm-project/cfe/'
         clang = os.path.join(llvm, 'tools', 'clang')
-        self.checkout(repo_base, version, clang)
+        self.checkout(repo_base, version.replace('.', '/'), clang)
         
         ########################################
         # checkout compiler-rt
         #
         repo_base = 'http://llvm.org/svn/llvm-project/compiler-rt/'
         compiler_rt = os.path.join(llvm, 'projects', 'compiler-rt')
-        self.checkout(repo_base, version, compiler_rt)
+        self.checkout(repo_base, version.replace('.', '/'), compiler_rt)
 
 
         ########################################
@@ -164,20 +164,10 @@ class InstallSubcommand():
         if self.check_version(version, 'clang_extra_versions'):
             repo_base = 'http://llvm.org/svn/llvm-project/clang-tools-extra/'
             extra = os.path.join(llvm, 'tools', 'clang', 'tools', 'extra')
-            self.checkout(repo_base, version, extra)
+            self.checkout(repo_base, version.replace('.', '/'), extra)
 
         return
 
-    def has_final(self, repo):
-        """
-        check specified release has final directory or not 
-        """
-        cmd = ['svn', 'ls']
-        cmd.append(repo)
-        ret, out = common.exec_command(cmd)
-        if 'final/' in out.split('\n'):
-            return True
-        return False
 
     def configure(self, generator, builder, version):
         """
@@ -192,7 +182,7 @@ class InstallSubcommand():
         os.chdir(build_dir)
 
         ########################################
-        #
+        # create cmd
         #
         cmd = [ os.path.join(self.llvmenv_home, 'llvm_build', version, 'llvm', 'configure' )]
         if generator == 'cmake':
@@ -218,11 +208,9 @@ class InstallSubcommand():
             for opt in opts:
                 if opt.split("=")[0] == '-DCMAKE_INSTALL_PREFIX':
                     opts.remove(opt)
-            #args.append('-DLLVM_BUILD_TESTS=ON')
-            #args.append('-DLLVM_ENABLE_ASSERTIONS=ON')  #default OFF IF RELEASE
-            #args.append('-DLLVM_BUILD_EXAMPLES=ON')     #default OFF
-            #args.append('-DCLANG_BUILD_EXAMPLES=ON')    #default OFF
-            opts.append('-DCMAKE_EXPORT_COMPILE_COMMANDS=ON') #default OFF
+            opts.append('-DCMAKE_EXPORT_COMPILE_COMMANDS=ON') 
+            opts.append('-DLLVM_BUILD_EXAMPLES=ON') 
+            opts.append('-DCLANG_BUILD_EXAMPLES=ON') 
             opts.append('-DCMAKE_INSTALL_PREFIX=%s' % install_dir)
             return opts
 
@@ -231,10 +219,6 @@ class InstallSubcommand():
                 if opt.split("=")[0] == '--prefix':
                     opts.remove(opt)
             opts.append('--prefix=%s' % install_dir)
-            #args.append('--disable-optimized')             #default yes
-            #args.append('--enable-assertions')             #default yes
-            #args.append('--enable-debug-runtime')
-            #args.append('--enable-debug-symbols')
             return opts
         return opts
 

@@ -43,7 +43,7 @@ class ListSubcommand():
         output installed version
         """
         ########################################
-        #
+        # print version
         #
         dir_path =  self.llvmenv_home + '/llvms/'
         for version in os.listdir(dir_path):
