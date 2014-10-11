@@ -33,8 +33,8 @@ parser_init.add_argument('--update', action='store_true', default=False, help='u
 #
 parser_install = \
     subparsers.add_parser('install', help='install llvm/clang')
-parser_install.add_argument('version', type=str, default='release_33', help='install version')    
-parser_install.add_argument('--opt', type=str, default='', help='configure option')    
+parser_install.add_argument('version', type=str, default='release_33', help='install version')
+parser_install.add_argument('--opt', type=str, default='', help='configure option')
 parser_install.add_argument('--no-delete-src-dir', action='store_true', default=False, help='don\'t delete checkout src after install')
 parser_install.add_argument('--no-delete-build-dir', action='store_true', default=False, help='don\'t delete build directory after install')
 parser_install.add_argument('--generator', type=str, default='gnu', help='specify generator. default is gnu autotools')
@@ -46,15 +46,17 @@ parser_install.add_argument('--builder', type=str, default='make', help='specify
 #
 parser_uninstall = \
     subparsers.add_parser('uninstall', help='uninstall llvm/clang')
-parser_uninstall.add_argument('version', type=str, default=None, help='uninstall version')    
-parser_uninstall.add_argument('--no-delete-build-dir', action='store_true', default=False, help='uninstall version')    
+parser_uninstall.add_argument('version', type=str, default=None, help='uninstall version')
+parser_uninstall.add_argument('--no-delete-build-dir', action='store_true', default=False, help='uninstall version')
 
 #######################################
 #
 #
 parser_use = \
     subparsers.add_parser('use', help='install llvm/clang')
-parser_use.add_argument('version', type=str, default=None,  help='enable version')    
+parser_use.add_argument('version', type=str, default=None,  help='enable version')
+parser_use.add_argument('--suffix', type=str, default='', help='specify suffix')
+
 
 
 #######################################

@@ -31,7 +31,7 @@ class UseSubcommand():
         ########################################
         # create sim link
         #
-        self.create_link(use_version)
+        self.create_link(use_version, self.options.suffix)
         return
 
     def update_version(self, version):
@@ -48,21 +48,10 @@ class UseSubcommand():
         common.exec_command_with_call(cmd)
         return
 
-    def create_link(self, version):
+    def create_link(self, version, suffix=''):
         """
         create sim link
         """
-        ########################################
-        # create suffix
-        #
-        suffix=''
-        if version.startswith('RELEASE'):
-            suffix=version.split('.')[0].split('_')[1]
-        elif version.startswith('trunk'):
-            suffix='trunk'
-        elif version.startswith('google'):
-            suffix='google'
-
         ########################################
         # create dir
         #
@@ -79,6 +68,6 @@ class UseSubcommand():
         os.chdir(dir_path)
         bin_path = self.llvmenv_home + '/llvms/' + version + '/bin/'
         for command in os.listdir(bin_path):
-            cmd = ['ln', '-s', bin_path + command, command + '_' + suffix]
+            cmd = ['ln', '-s', bin_path + command, command + suffix]
             common.exec_command(cmd)
         return
