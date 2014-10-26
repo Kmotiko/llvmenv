@@ -158,6 +158,23 @@ class InstallSubcommand():
         self.checkout(repo_base, version.replace('.', '/'), compiler_rt)
 
 
+        if self.options.use_libcxx == True:
+            ########################################
+            # checkout libc++
+            #
+            repo_base = 'http://llvm.org/svn/llvm-project/libcxx/'
+            libcxx = os.path.join(llvm, 'projects', 'libcxx')
+            self.checkout(repo_base, version.replace('.', '/'), libcxx)
+
+        if self.options.use_libcxxabi == True:
+            ########################################
+            # checkout libc++abi
+            #
+            repo_base = 'http://llvm.org/svn/llvm-project/libcxxabi/'
+            libcxx = os.path.join(llvm, 'projects', 'libcxxabi')
+            self.checkout(repo_base, version.replace('.', '/'), libcxx)
+
+
         ########################################
         # clang-extra-tools
         #

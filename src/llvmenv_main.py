@@ -39,6 +39,8 @@ parser_install.add_argument('--no-delete-src-dir', action='store_true', default=
 parser_install.add_argument('--no-delete-build-dir', action='store_true', default=False, help='don\'t delete build directory after install')
 parser_install.add_argument('--generator', type=str, default='gnu', help='specify generator. default is gnu autotools')
 parser_install.add_argument('--builder', type=str, default='make', help='specify builder. default is make')
+parser_install.add_argument('--use-libcxx', action='store_true', default=False, help='use libcxx as the standard C++ Library')
+parser_install.add_argument('--use-libcxxabi', action='store_true', default=False, help='use libcxxabi as the C++ ABI Library')
 
 
 #######################################
