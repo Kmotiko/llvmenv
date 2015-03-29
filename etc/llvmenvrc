@@ -1,4 +1,6 @@
 LLVMENV_LLVM_LINKS=$LLVMENV_HOME/links
 LLVMENV_BIN=$LLVMENV_HOME/bin
 export PATH=$LLVMENV_LLVM_LINKS:$LLVMENV_BIN:$PATH
-source $LLVMENV_HOME/etc/bash_complete.d/complete.sh
+if [[ "$0" =~ ^.*bash.* ]]; then
+  source $LLVMENV_HOME/etc/bash_complete.d/complete.sh
+fi
