@@ -1,76 +1,118 @@
 LLVMENV
 ==================
 
-# はじめに
-llvmenvはllvm/clangのインストール/管理を行うためのツールです。  
-手元でバージョン切り替えて使うのが面倒だったので作ってみました。  
-ほぼ個人用なので機能等はミニマムですが，最低限インストール/アンインストール/バージョンの切り替えは出きるはずです。　
-Pythonで書いているので動作にはPythonが必要です。  
+# What is this?
+LLVMENV is support tool to install llvm/clang in your environment.  
+Current features is minimum, but install and uninstall command will work well.  
+This tool is written with python.  
 
-# 動作環境
-以下の環境で動作確認しています。
+# Environments
 
-|項目       |説明       |
+|項目       |Value       |
 |:----------|:----------|
-|OS         | Ubuntu 13.04 64bit|
+|OS         | Ubuntu 14.04 64bit|
 |Python     | Python 2.7|
-|GCC        | GCC4.7.3|
+|GCC        | GCC 4.7.3|
 
 
-# 使い方
-使い方の説明を簡単に書いておきます。
+# Initial setting
 
-## bashrc
-$HOME/.bashrc を開いて以下を追記
+## get llvmenv
+Cloning llvmenv code from github repository.
 
-```shell
-export LLVMENV\_HOME=~/llvmenv
-source $LLVMENV\_HOME/etc/llvmenvrc
+```
+$ git clone https://github.com/Kmotiko/llvmenv.git $HOME/.llvmenv
 ```
 
-## 初期化
-最初に以下のコマンドで初期化します。
+## bashrc
+To use llvmenv, please add following settings to $HOME/.bashrc.
+
+```shell
+export LLVMENV_HOME=~/.llvmenv
+source $LLVMENV_HOME/etc/llvmenvrc
+```
+
+
+# How to use
+
+LLVMENV has following sub-commands.
+
+ * init
+ * list
+ * install
+ * use
+ * uninstall
+
+We describe how to use sub-commands in this clause.
+
+## Initialize
+At first, initialize llvm information with following command.
 
 ```shell
 llvmenv init --init
 ```
 
-実行するとsvn lsでリポジトリからLLVM,Clang,Compiler-rt,clang-extra-toolsのバージョン情報を取得します。  
-ここで取得したバージョンをインストールコマンドでインストール対象として使用します。  
+When running "init" command, this tool get version information about LLVM/Clang/Compiler-rt/Clang-extra-tools using "svn ls" command.  
+You will be able to specify that version when execute install command.  
 
-## リスト表示
-以下のコマンドでinitで取得してきたインストール可能なバージョンを表示します。
+
+## List
+The "list --all" command show available version to install.
 
 ```shell
 llvmenv list --all
 ```
 
-インストール済みのバージョンを表示する時は以下のコマンドを使用します。
+And more, "list" command show versions already installed.
 
 ```shell
 llvmenv list
 ```
 
-## インストール
-LLVMをインストールしたいときは以下のコマンドを使用します。  
-optに渡したオプションはそのままconfigureのオプションとして使用されます。  
-ただしインストール先は内部で書き換えるのでprefixは指定しても無効になります。  
+## Install
+You can install llvm/clang with "install" subcommand.  
+If you specify options with "--opt" option, that parameter is used as configure parameter except prefix.  
+But, install target directory is defined in llvmenv, so prefix option is ignored whenever you specify it with "--opt".  
 
 ```shell
-llvmenv install RELEASE_33 --no_delete_src_dir --no_delete_build_dir --opt="--enable-optimized"
+llvmenv install RELEASE_361.final --delete-src --delete-build --opt="--enable-optimized"
+```
+
+### Options
+
+The install sub-command has options described in bellow.
+
+|option                     | describe                                                            | default       |
+|:--------------------------|:--------------------------------------------------------------------|:--------------|
+|delete-src                 | delete src directory after install                                  | True          |
+|delete-build               | delete build directory after install                                | True          |
+|generator                  | specify generator: gnu or cmake                                     | gnu autotools |
+|opt                        | this parameter will be told  to configure or cmake command as options       | -             |
+|builder                    | specify builder: make or ninja                                      | make          |
+|use-libcxx                 | set to use-libcxx                                                   | False         |
+|use-libcxxabi              | set to use-libcxxabi                                                | False         |
+
+
+## Use
+The "use" sub-command enable specified llvm/clang version to use.
+
+
+```shell
+llvmenv use RELEASE_361.final
+```
+
+## Uninstall
+You can uninstall llvm/clang with following command.
+
+```shell
+llvmenv uninstall RELEASE_361.final
 ```
 
 
-## バージョン切り替え
-使用するバージョンを切り替えには下記のコマンドを実行します。
+# License
 
-```shell
-llvmenv use RELEASE_33
+This software is distributed with MIT license.
+
 ```
-
-## アンインストール
-アンインストールする時は下記コマンドを実行します。
-
-```shell
-llvmenv uninstall RELEASE_33
+Copyright (c) 2013 Kmotiko
 ```
