@@ -280,17 +280,17 @@ class InstallSubcommand():
     def clean_directory(self, version):
         self.logger.info('start clean directory')
         ########################################
-        # if no-delete-src is False, delete src dir
+        # if delete-src is True, delete src dir
         #
         src_dir = os.path.join(self.llvmenv_home, 'llvm_build', version , 'llvm')
-        if not self.options.no_delete_src_dir:
+        if not self.options.delete_src:
             common.remove_dir(src_dir)
 
         ########################################
-        # if no-delete-build is False, delete build
+        # if delete-build is True, delete build
         #
         build_dir = os.path.join(self.llvmenv_home, 'llvm_build', version , 'build')
-        if not self.options.no_delete_build_dir:
+        if not self.options.delete_build:
             common.remove_dir(build_dir)
         
         return

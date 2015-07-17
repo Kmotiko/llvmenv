@@ -33,10 +33,10 @@ parser_init.add_argument('--update', action='store_true', default=False, help='u
 #
 parser_install = \
     subparsers.add_parser('install', help='install llvm/clang')
-parser_install.add_argument('version', type=str, default='release_33', help='install version')
+parser_install.add_argument('version', type=str, default='release_361.final', help='install target version')
 parser_install.add_argument('--opt', type=str, default='', help='configure option')
-parser_install.add_argument('--no-delete-src-dir', action='store_true', default=False, help='don\'t delete checkout src after install')
-parser_install.add_argument('--no-delete-build-dir', action='store_true', default=False, help='don\'t delete build directory after install')
+parser_install.add_argument('--delete-src', type=bool, default=True, help='delete checkout src after install')
+parser_install.add_argument('--delete-build', type=bool, default=True, help='delete build directory after install')
 parser_install.add_argument('--generator', type=str, default='gnu', help='specify generator. default is gnu autotools')
 parser_install.add_argument('--builder', type=str, default='make', help='specify builder. default is make')
 parser_install.add_argument('--use-libcxx', action='store_true', default=False, help='use libcxx as the standard C++ Library')
@@ -49,7 +49,6 @@ parser_install.add_argument('--use-libcxxabi', action='store_true', default=Fals
 parser_uninstall = \
     subparsers.add_parser('uninstall', help='uninstall llvm/clang')
 parser_uninstall.add_argument('version', type=str, default=None, help='uninstall version')
-parser_uninstall.add_argument('--no-delete-build-dir', action='store_true', default=False, help='uninstall version')
 
 #######################################
 #
