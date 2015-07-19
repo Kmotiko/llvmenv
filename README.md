@@ -8,11 +8,11 @@ This tool is written with python.
 
 # Environments
 
-|項目       |Value       |
-|:----------|:----------|
-|OS         | Ubuntu 14.04 64bit|
-|Python     | Python 2.7|
-|GCC        | GCC 4.7.3|
+|Item           |Value       |
+|:--------------|:----------|
+|OS             | Ubuntu 14.04 64bit|
+|Python         | Python 2.7.9|
+|Cpp Compielr   | Clang 3.5/GCC 4.7.3|
 
 
 # Initial setting
