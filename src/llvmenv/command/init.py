@@ -12,14 +12,7 @@ class InitSubcommand():
         """
         run command
         """
-        if self.options.init == True:
-            self.init()
-            return
-        elif self.options.update == True:
-            self.update()
-            return
-        else:
-            self.logger.error('unknown command')
+        self.init()
         return
 
     def init(self): 
@@ -27,14 +20,6 @@ class InitSubcommand():
         exec initialize ... 
         """
         self.logger.info( 'start initialize version list')
-        self.get_list()
-        return
-
-    def update(self):
-        """
-        exec update ... 
-        """
-        self.logger.info( 'start update version list')
         self.get_list()
         return
 

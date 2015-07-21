@@ -24,10 +24,6 @@ subparsers = parser.add_subparsers(help='subcommand')
 parser_init = \
     subparsers.add_parser('init', help='initialize llvmenv')
 
-parser_init.add_argument('--init', action='store_true', default=False, help='initialize llvm version info')
-parser_init.add_argument('--update', action='store_true', default=False, help='update llvm version info')
-
-
 #######################################
 # install options
 #
