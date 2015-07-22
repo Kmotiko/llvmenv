@@ -49,11 +49,11 @@ We describe how to use sub-commands in this clause.
 At first, initialize llvm information with following command.
 
 ```shell
-llvmenv init --init
+llvmenv init
 ```
 
 When running "init" command, this tool get version information about LLVM/Clang/Compiler-rt/Clang-extra-tools using "svn ls" command.  
-You will be able to specify that version when execute install command.  
+Now, you will be able to specify the version when execute install command.  
 
 
 ## List
