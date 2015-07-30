@@ -231,7 +231,7 @@ class InstallSubcommand():
             opts.append('-DCMAKE_INSTALL_PREFIX=%s' % install_dir)
             return opts
 
-        elif generator=='gnu':
+        elif generator=='autotools':
             for opt in opts:
                 if opt.split("=")[0] == '--prefix':
                     opts.remove(opt)
@@ -283,14 +283,14 @@ class InstallSubcommand():
         # if delete-src is True, delete src dir
         #
         src_dir = os.path.join(self.llvmenv_home, 'llvm_build', version , 'llvm')
-        if not self.options.delete_src:
+        if self.options.delete_src:
             common.remove_dir(src_dir)
 
         ########################################
         # if delete-build is True, delete build
         #
         build_dir = os.path.join(self.llvmenv_home, 'llvm_build', version , 'build')
-        if not self.options.delete_build:
+        if self.options.delete_build:
             common.remove_dir(build_dir)
         
         return
