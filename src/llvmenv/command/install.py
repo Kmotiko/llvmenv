@@ -3,6 +3,46 @@ import os
 from llvmenv.lib import common
 
 class InstallSubcommand():
+    llvm_opts = {
+            "autotools":{
+                "enable_targets": "--enable_targets",
+                "enable_optimized": {
+                    True: "--enable-optimized", 
+                    False: "--disable_optimized"},
+                "enable_assertions": {
+                    True: "--enable-assertions", 
+                    False: "--disable-assertions"}
+                },
+            "cmake":{
+                "enable_targets": "-DLLVM_TARGETS_TO_BUILD",
+                "enable_optimized": {
+                    "key": "-DCMAKE_BUILD_TYPE", 
+                    True: "RELEASE", 
+                    False: "DEBUG"
+                    },
+                "enable_assertions": {
+                    "key": "-DLLVM_ENABLE_ASSERTIONS", 
+                    True: "ON", 
+                    False: "OFF"},
+                "build_examples": {
+                    "key": "-DLLVM_BUILD_EXAMPLES", 
+                    True: "ON", 
+                    False: "OFF"},
+                "build_tests": {
+                    "key": "-DLLVM_BUILD_TESTS", 
+                    True: "ON", 
+                    False: "OFF"}
+                }
+            }
+    clang_opts = {
+            "cmake":{
+                "build_examples": {
+                    "key": "-DCLANG_BUILD_EXAMPLES", 
+                    True: "ON", 
+                    False: "OFF"}
+                }
+            }
+
     def __init__(self, opts):
         self.logger=common.get_logger()
         self.llvmenv_home = os.getenv('LLVMENV_HOME')
@@ -218,25 +258,53 @@ class InstallSubcommand():
 
     def generate_opts(self, generator, version):
         opts = []
-        if self.options.opt != '':
-            opts = self.options.opt.split(' ')
-        install_dir = self.llvmenv_home + '/llvms/' + version
+        #if self.options.opt != '':
+        #    opts = self.options.opt.split(' ')
+        install_dir = os.path.join(self.llvmenv_home, 'llvms', version)
         if generator == 'cmake':
             for opt in opts:
-                if opt.split("=")[0] == '-DCMAKE_INSTALL_PREFIX':
+                if opt.startswith('-DCMAKE_INSTALL_PREFIX') :
                     opts.remove(opt)
+
+            opt_map = self.llvm_opts['cmake']
+            copt_map = self.clang_opts['cmake']
+            # enable_targets
+            opt_str = '%s=%s' % (opt_map['enable_targets'], self.options.enable_targets)
+            opts.append(opt_str)
+            # build_type
+            opt_str = '%s=%s' % (opt_map['enable_optimized']['key'], opt_map['enable_optimized'][self.options.enable_optimized])
+            opts.append(opt_str)
+            # enable_assertions
+            opt_str = '%s=%s' % (opt_map['enable_assertions']['key'], opt_map['enable_assertions'][self.options.enable_assertions])
+            opts.append(opt_str)
+            # build_examples
+            opt_str = '%s=%s' % (opt_map['build_examples']['key'], opt_map['build_examples'][self.options.build_examples])
+            opts.append(opt_str)
+            opt_str = '%s=%s' % (copt_map['build_examples']['key'], copt_map['build_examples'][self.options.build_examples])
+            opts.append(opt_str)
+            # build_tests
+            opt_str = '%s=%s' % (opt_map['build_tests']['key'], opt_map['build_tests'][self.options.build_tests])
+            opts.append(opt_str)
             opts.append('-DCMAKE_EXPORT_COMPILE_COMMANDS=ON') 
-            opts.append('-DLLVM_BUILD_EXAMPLES=ON') 
-            opts.append('-DCLANG_BUILD_EXAMPLES=ON') 
             opts.append('-DCMAKE_INSTALL_PREFIX=%s' % install_dir)
-            return opts
 
         elif generator=='autotools':
             for opt in opts:
-                if opt.split("=")[0] == '--prefix':
+                if opt.startswith('--prefix') :
                     opts.remove(opt)
+
+            opt_map = llvm_opts['autotools']
+            # enable_targets
+            opt_str = '%s=%s' % (opt_map['enable_targets'], self.options.enable_targets)
+            opts.append(opt_str)
+            ## build_type
+            opt_str = '%s' % (opt_map['enable_optimized'][self.options.enable_optimized])
+            opts.append(opt_str)
+            ## enable_assertions
+            opt_str = '%s' % (opt_map['enable_assertions'][self.options.enable_optimized])
+            opts.append(opt_str)
             opts.append('--prefix=%s' % install_dir)
-            return opts
+
         return opts
 
     def make(self, builder, version):
@@ -247,7 +315,7 @@ class InstallSubcommand():
         ########################################
         # change directory
         #
-        build_dir =  self.llvmenv_home + '/llvm_build/' + version + '/build'
+        build_dir =  os.path.join(self.llvmenv_home, 'llvm_build', version, 'build')
         os.chdir(build_dir)
 
         ########################################

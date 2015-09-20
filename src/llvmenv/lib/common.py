@@ -4,6 +4,7 @@ import os
 import logging
 import logging.handlers
 import ConfigParser
+import yaml
 
 def exec_command(cmd):
     """
@@ -87,3 +88,8 @@ def load_config(file_path):
     conf = ConfigParser.SafeConfigParser()
     conf.read(file_path)
     return conf
+
+def load_yaml(file_path):
+    print 'load yaml file from ... %s ' % file_path
+    data = yaml.safe_load(open(file_path))
+    return data

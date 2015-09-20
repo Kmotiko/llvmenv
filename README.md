@@ -6,15 +6,6 @@ LLVMENV is support tool to install llvm/clang in your environment.
 Current features is minimum, but install and uninstall command will work well.  
 This tool is written with python.  
 
-# Environments
-
-|Item           |Value       |
-|:--------------|:----------|
-|OS             | Ubuntu 14.04 64bit|
-|Python         | Python 2.7.9|
-|Cpp Compielr   | Clang 3.5/GCC 4.7.3|
-
-
 # Initial setting
 
 ## get llvmenv
@@ -75,7 +66,8 @@ If you specify options with "--opt" option, that parameter is used as configure 
 But, install target directory is defined in llvmenv, so prefix option is ignored whenever you specify it with "--opt".  
 
 ```shell
-llvmenv install RELEASE_361.final --delete-src --delete-build --opt="--enable-optimized"
+# DEBUG build
+llvmenv install RELEASE_361.final --delete-src --delete-build --enable-optimized=False --enable-assertions=True
 ```
 
 ### Options
@@ -87,7 +79,12 @@ The install sub-command has options described in bellow.
 |delete-src                 | delete src directory after install                                  | True          |
 |delete-build               | delete build directory after install                                | True          |
 |generator                  | specify generator: gnu or cmake                                     | gnu autotools |
-|opt                        | this parameter will be told  to configure or cmake command as options       | -             |
+|enable-targets             | specify target architecture to build.                               | host          |
+|enable-optimized           | if true, RELEASE build, otherwise DEBUG build.                      | True(RELEASE) |
+|enable-assertions          | enable assertions or not                                            | False         |
+|build-examples             | build llvm/clang examples or not                                    | True          |
+|build-tests                | build llvm/clang tests or not                                       | True          |
+|opt                        | this parameter will be directory told to configure or cmake command as options| -             |
 |builder                    | specify builder: make or ninja                                      | make          |
 |use-libcxx                 | set to use-libcxx                                                   | False         |
 |use-libcxxabi              | set to use-libcxxabi                                                | False         |
