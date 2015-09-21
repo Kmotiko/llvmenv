@@ -1,10 +1,13 @@
-import subprocess
-from subprocess import Popen, PIPE
-import os
+import ConfigParser
 import logging
 import logging.handlers
-import ConfigParser
+import os
+import tarfile
+import urllib
 import yaml
+import sys,traceback
+import subprocess
+from subprocess import Popen, PIPE
 
 def exec_command(cmd):
     """
@@ -25,6 +28,14 @@ def exec_command_with_call(cmd):
     exec command with call method
     """
     return subprocess.call(cmd)
+
+def makedirs(path):
+    """
+    """
+    if os.path.exists(path):
+        print 'aleady exists'
+    else :
+        os.makedirs(path)
 
 def remove_dir(path):
     """
@@ -75,6 +86,30 @@ def init_logger(level, log_file):
     else:
         log.setLevel(logging.INFO)
     return
+
+
+def download(url, target_file):
+    try:
+        (filename, headers) = urllib.urlretrieve(url, target_file)
+    except IOError, e:
+        traceback.print_exc(file=sys.stdout)
+    urllib.urlcleanup()
+    return filename
+
+def decompress_xz(target_file, target_dir = None):
+    """
+    in python 2.x, xzlib is not included in standard library
+    """
+    cmd =['xz', '-d', target_file]
+    exec_command(cmd)
+
+
+def extract(archive, target_dir):
+    """
+    """
+    tarball = tarfile.TarFile(archive)
+    tarball.extractall(target_dir)
+
 
 def get_logger():
     """

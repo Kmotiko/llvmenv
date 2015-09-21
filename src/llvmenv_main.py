@@ -27,17 +27,18 @@ parser_init = \
 #######################################
 # install options
 #
+str2bool = lambda opt_str:  False if opt_str == 'False' or opt_str == 'false' else True
 parser_install = \
     subparsers.add_parser('install', help='install llvm/clang')
 parser_install.add_argument('version', type=str, default='release_361.final', help='install target version')
 parser_install.add_argument('--enable-targets', type=str, default='host', help='specify target to build. default is host')
-parser_install.add_argument('--enable-optimized', type=bool, default=True, help='specify build type. RELEASE or DEBUG')
-parser_install.add_argument('--enable-assertions', type=bool, default=False, help='enable assertions or not')
-parser_install.add_argument('--build-examples', type=bool, default=True, help='build llvm examples or not')
-parser_install.add_argument('--build-tests', type=bool, default=True, help='build llvm tests or not. This argument is available when using cmake.')
+parser_install.add_argument('--enable-optimized', type=str2bool, default=True, help='specify build type. RELEASE or DEBUG')
+parser_install.add_argument('--enable-assertions', type=str2bool, default=False, help='enable assertions or not')
+parser_install.add_argument('--build-examples', type=str2bool, default=True, help='build llvm examples or not')
+parser_install.add_argument('--build-tests', type=str2bool, default=True, help='build llvm tests or not. This argument is available when using cmake.')
 parser_install.add_argument('--opt', type=str, default='', help='configure option. You can use this field to specify configure option directory')
-parser_install.add_argument('--delete-src', type=bool, default=True, help='delete checkout src after install')
-parser_install.add_argument('--delete-build', type=bool, default=True, help='delete build directory after install')
+parser_install.add_argument('--delete-src', type=str2bool, default=True, help='delete checkout src after install')
+parser_install.add_argument('--delete-build', type=str2bool, default=True, help='delete build directory after install')
 parser_install.add_argument('--generator', type=str, default='cmake', help='specify generator. default is cmake')
 parser_install.add_argument('--builder', type=str, default='ninja', help='specify builder. default is ninja')
 parser_install.add_argument('--use-libcxx', action='store_true', default=False, help='use libcxx as the standard C++ Library')
@@ -77,8 +78,6 @@ def main():
     llvmenv_home = os.getenv('LLVMENV_HOME')
     config=common.load_config(os.path.join(llvmenv_home, 'etc', 'llvmenv.conf'))
     common.init_logger(config.get('default', 'log_level'), os.path.join(llvmenv_home, 'llvmenv.log'))
-    #config=common.load_yaml(os.path.join(llvmenv_home, 'etc', 'config.yml'))
-    #common.init_logger(config['common']['log_level'], os.path.join(llvmenv_home, 'llvmenv.log'))
 
     #######################################
     # parse

@@ -28,24 +28,12 @@ source $LLVMENV_HOME/etc/llvmenvrc
 
 LLVMENV has following sub-commands.
 
- * init
  * list
  * install
  * use
  * uninstall
 
 We describe how to use sub-commands in this clause.
-
-## Initialize
-At first, initialize llvm information with following command.
-
-```shell
-llvmenv init
-```
-
-When running "init" command, this tool get version information about LLVM/Clang/Compiler-rt/Clang-extra-tools using "svn ls" command.  
-Now, you will be able to specify the version when execute install command.  
-
 
 ## List
 The "list --all" command show available version to install.
@@ -62,7 +50,7 @@ llvmenv list
 
 ## Install
 You can install llvm/clang with "install" subcommand.  
-If you specify options with "--opt" option, that parameter is used as configure parameter except prefix.  
+If you specify options with "--opt" option, that parameter is directory used as configure parameter except prefix.  
 But, install target directory is defined in llvmenv, so prefix option is ignored whenever you specify it with "--opt".  
 
 ```shell

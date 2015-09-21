@@ -1,5 +1,7 @@
 import os
+import llvm_url
 from llvmenv.lib import common
+
 
 class ListSubcommand():
     def __init__(self, opts):
@@ -26,16 +28,10 @@ class ListSubcommand():
         file_path =  self.llvmenv_home + '/etc/available_versions'
 
         ########################################
-        # check file exists or not 
-        #
-        if os.path.exists(file_path) == False:
-            return False
-        
-        ########################################
         # print out list
         # 
-        for line in open(file_path):
-            print line.rstrip()
+        for version in sorted(llvm_url.urls.keys()) :
+            print version
         return True
 
     def list_installed(self):
@@ -47,5 +43,7 @@ class ListSubcommand():
         #
         dir_path =  self.llvmenv_home + '/llvms/'
         for version in os.listdir(dir_path):
+            if version.startswith('.') :
+                continue
             print version
         return True
