@@ -20,7 +20,8 @@ To use llvmenv, please add following settings to $HOME/.bashrc.
 
 ```shell
 export LLVMENV_HOME=~/.llvmenv
-source $LLVMENV_HOME/etc/llvmenvrc
+export PATH=$LLVMENV_HOME/bin:$PATH
+if which llvmenv > /dev/null; then eval "$(llvmenv init)"; fi
 ```
 
 
@@ -39,13 +40,13 @@ We describe how to use sub-commands in this clause.
 The "list --all" command show available version to install.
 
 ```shell
-llvmenv list --all
+$ llvmenv list --all
 ```
 
 And more, "list" command show versions already installed.
 
 ```shell
-llvmenv list
+$ llvmenv list
 ```
 
 ## Install

@@ -16,12 +16,12 @@ class UseSubcommand():
         self.logger.info('enable version %s' % use_version)
 
         ########################################
-        # check intalled version
+        # check installed version
         #
         installed = os.listdir(self.llvmenv_home + '/llvms/')
         if not use_version in installed:
             self.logger.error('%s is not installed yet' % use_version)
-            return
+            return False
         
         ########################################
         # update rc file
@@ -32,25 +32,23 @@ class UseSubcommand():
         # create sim link
         #
         self.create_link(use_version, self.options.suffix)
-        return
+        return True
 
     def update_version(self, version):
         """
-        update using version of rc file
+        update using version
         """
         ########################################
         #
         #
-        rcfile = self.llvmenv_home + '/etc/llvmenvrc'
-        new_line = '\LLVMENV_LLVM_VERSION=' + self.llvmenv_home + '/llvms/' + version + '/bin/'
-        cmd = ['sed']
-        cmd += ['-i', '/^LLVMENV_LLVM_VERSION*/c %s ' % new_line, rcfile]
-        common.exec_command_with_call(cmd)
+        version_file = os.path.join(self.llvmenv_home, 'etc', 'version')
+        with open(version_file, 'w') as f:
+            f.write('%s' % version)
         return
 
     def create_link(self, version, suffix=''):
         """
-        create sim link
+        create sym link
         """
         ########################################
         # create dir
@@ -63,11 +61,11 @@ class UseSubcommand():
             os.mkdir(dir_path)
         
         ########################################
-        # create sim link
+        # create sym link
         #
         os.chdir(dir_path)
-        bin_path = self.llvmenv_home + '/llvms/' + version + '/bin/'
+        bin_path = os.path.join(self.llvmenv_home, 'llvms', version, 'bin')
+        sym_path = os.path.join(self.llvmenv_home, 'links')
         for command in os.listdir(bin_path):
-            cmd = ['ln', '-s', bin_path + command, command + suffix]
-            common.exec_command(cmd)
+            os.symlink(os.path.join(bin_path, command), os.path.join(sym_path, command+suffix))
         return

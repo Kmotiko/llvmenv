@@ -25,8 +25,6 @@ class ListSubcommand():
         """
         output available version
         """
-        file_path =  self.llvmenv_home + '/etc/available_versions'
-
         ########################################
         # print out list
         # 

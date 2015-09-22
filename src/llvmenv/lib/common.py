@@ -4,7 +4,6 @@ import logging.handlers
 import os
 import tarfile
 import urllib
-import yaml
 import sys,traceback
 import subprocess
 from subprocess import Popen, PIPE
@@ -119,12 +118,6 @@ def get_logger():
 def load_config(file_path):
     """
     """
-    print 'load config from ... %s ' % file_path
     conf = ConfigParser.SafeConfigParser()
     conf.read(file_path)
     return conf
-
-def load_yaml(file_path):
-    print 'load yaml file from ... %s ' % file_path
-    data = yaml.safe_load(open(file_path))
-    return data
