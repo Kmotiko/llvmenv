@@ -37,11 +37,22 @@ class ListSubcommand():
         output installed version
         """
         ########################################
+        # get current llvm version
+        #
+        version_file = os.path.join(self.llvmenv_home, 'etc', 'version')
+        current_version = ''
+        with open(version_file, 'r') as f:
+            current_version = f.read()
+
+        ########################################
         # print version
         #
         dir_path =  self.llvmenv_home + '/llvms/'
         for version in os.listdir(dir_path):
             if version.startswith('.') :
                 continue
-            print version
+            elif version == current_version:
+                print '* %s' % version
+            else:
+                print '  %s' % version
         return True
