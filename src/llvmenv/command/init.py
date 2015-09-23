@@ -1,11 +1,11 @@
 import os
+import re
 from llvmenv.lib import common
 
 
 class InitSubcommand():
     def __init__(self, opts):
         self.logger=common.get_logger()
-        self.llvmenv_home = os.getenv('LLVMENV_HOME')
         self.options = opts
 
     def run(self):
@@ -19,8 +19,11 @@ class InitSubcommand():
         """
         exec initialize ... 
         """
-        self.logger.info( 'start initialize version list')
-        self.get_list()
+        if self.options.update_version :
+            self.logger.info( 'start initialize version list')
+            self.get_list()
+        else:
+            self.__print_script()
         return
 
     def get_list(self): 
@@ -29,7 +32,7 @@ class InitSubcommand():
         """
         self.logger.info( 'check available release version')
 
-        self.llvmenv_home = os.getenv('LLVMENV_HOME')
+        llvmenv_home = os.getenv('LLVMENV_HOME')
 
         ########################################
         # check llvm tags
@@ -65,7 +68,7 @@ class InitSubcommand():
         ########################################
         # output available release branches
         #
-        file_path =  os.path.join(self.llvmenv_home , 'etc','available_versions')
+        file_path =  os.path.join(llvmenv_home , 'etc','available_versions')
         list_file = open(file_path, 'w')
         list_file.write('trunk\n')
         releases = [ x for x in llvm_out.split('\n') if x in clang_out.split('\n') and x in compiler_rt_out.split('\n')]
@@ -100,7 +103,7 @@ class InitSubcommand():
         ########################################
         # check clang-tools-extra tags
         #
-        file_path =  os.path.join(self.llvmenv_home , 'etc','clang_extra_versions')
+        file_path =  os.path.join(llvmenv_home , 'etc','clang_extra_versions')
         list_file = open(file_path, 'w')
         list_file.write('trunk\n')
         cmd = ['svn', 'ls']
@@ -132,4 +135,51 @@ class InitSubcommand():
         
         list_file.close()
         self.logger.info( 'save available version list')
+        return
+
+    def __print_script(self):
+        llvmenv_home = os.getenv('LLVMENV_HOME')
+        #############################################
+        # print export
+        #
+        self.__print_export_env()
+
+        #############################################
+        # print llvmenv_func
+        #
+        self.__print_llvmenv_func()
+
+        #############################################
+        # print completion
+        #
+        self.__print_complete_sh(llvmenv_home)
+        return
+
+    def __print_export_env(self):
+        llvmenv_home = os.getenv('LLVMENV_HOME')
+        home = os.getenv('HOME')
+        if not llvmenv_home:
+            llvmenv_home = os.path.join(home, '.llvmenv')
+        print 'export PATH=\"%s:${PATH}\"' % os.path.join(llvmenv_home, 'links')
+        return
+
+    def __print_llvmenv_func(self):
+        shell = os.getenv('SHELL')
+        print 'llvmenv() {'
+        print '  case $1 in'
+        print '  use)'
+        print '    command llvmenv \"$@\"'
+        print '    exec \"%s\";;' % shell
+        print '  *)'
+        print '    command llvmenv \"$@\";;'
+        print '  esac'
+        print '}'
+        return
+
+    def __print_complete_sh(self, llvmenv_home):
+        pattern = r"^.*bash.*"
+        shell = os.getenv('SHELL')
+        if re.match(pattern, shell) :
+            completion = os.path.join(llvmenv_home, 'etc', 'bash_complete.d', 'complete.sh')
+            print 'source %s' % completion
         return

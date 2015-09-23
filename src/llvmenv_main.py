@@ -23,6 +23,7 @@ subparsers = parser.add_subparsers(help='subcommand')
 #
 parser_init = \
     subparsers.add_parser('init', help='initialize llvmenv')
+parser_init.add_argument('--update-version', action='store_true', default=False, help='update available version with svn ls command.')
 
 #######################################
 # install options

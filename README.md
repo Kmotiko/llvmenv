@@ -20,7 +20,8 @@ To use llvmenv, please add following settings to $HOME/.bashrc.
 
 ```shell
 export LLVMENV_HOME=~/.llvmenv
-source $LLVMENV_HOME/etc/llvmenvrc
+export PATH=$LLVMENV_HOME/bin:$PATH
+if which llvmenv > /dev/null; then eval "$(llvmenv init)"; fi
 ```
 
 
@@ -40,10 +41,10 @@ We describe how to use sub-commands in this clause.
 At first, initialize llvm information with following command.
 
 ```shell
-llvmenv init
+llvmenv init --update-version
 ```
 
-When running "init" command, this tool get version information about LLVM/Clang/Compiler-rt/Clang-extra-tools using "svn ls" command.  
+When running "init --update-version" command, llvmenv get version information about LLVM/Clang/Compiler-rt/Clang-extra-tools using "svn ls" command.  
 Now, you will be able to specify the version when execute install command.  
 
 
