@@ -41,11 +41,9 @@ class UseSubcommand():
         ########################################
         #
         #
-        rcfile = self.llvmenv_home + '/etc/llvmenvrc'
-        new_line = '\LLVMENV_LLVM_VERSION=' + self.llvmenv_home + '/llvms/' + version + '/bin/'
-        cmd = ['sed']
-        cmd += ['-i', '/^LLVMENV_LLVM_VERSION*/c %s ' % new_line, rcfile]
-        common.exec_command_with_call(cmd)
+        version_file = os.path.join(self.llvmenv_home, 'etc', 'version')
+        with open(version_file, 'w') as f:
+            f.write('%s' % version)
         return
 
     def create_link(self, version, suffix=''):
