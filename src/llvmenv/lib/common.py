@@ -83,7 +83,6 @@ def get_logger():
 def load_config(file_path):
     """
     """
-    print 'load config from ... %s ' % file_path
     conf = ConfigParser.SafeConfigParser()
     conf.read(file_path)
     return conf
