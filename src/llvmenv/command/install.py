@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import json
 import os
 from llvmenv.lib import common
 
@@ -52,21 +53,27 @@ class InstallSubcommand():
         """
         run command
         """
-        try:
-            ########################################
-            # check version
-            #
-            self.check_version(self.options.version, 'available_versions')
-            
-            ########################################
-            # check exists directory
-            #
-            install_dir = os.path.join(self.llvmenv_home , 'llvms' , self.options.version)
-            if os.path.exists(install_dir):
-                self.logger.error('directory %s already exists' % install_dir)
-                self.logger.error('nothing to do')
-                return
 
+        ########################################
+        # pre check
+
+        ########################################
+        # check version
+        #
+        version_urls = self.is_available_version(self.options.version)
+        if version_urls == None:
+            return False
+        ########################################
+        # check exists directory
+        #
+        install_dir = os.path.join(self.llvmenv_home , 'llvms' , self.options.version)
+        if os.path.exists(install_dir):
+            self.logger.error('directory %s already exists' % install_dir)
+            self.logger.error('nothing to do')
+            return False
+
+        ret = True
+        try:
             build_base =  os.path.join(self.llvmenv_home , 'llvm_build' , self.options.version)
             if not os.path.exists( build_base ):
                 os.makedirs(build_base) 
@@ -80,14 +87,14 @@ class InstallSubcommand():
                 self.make(self.options.builder)
                 os.makedirs(install_dir) 
                 self.install(self.options.builder)
-                return 
+                return False
 
             ########################################
             # checkout
             #
             src_dir =  os.path.join(self.llvmenv_home , 'llvm_build' , self.options.version , 'llvm')
             if not os.path.exists(src_dir):
-                self.checkout_all(self.options.version)
+                self.checkout_all(self.options.version, version_urls)
             
             ########################################
             # configure
@@ -106,48 +113,47 @@ class InstallSubcommand():
             os.makedirs(install_dir) 
             self.install(self.options.builder, self.options.version)
 
-            return
+            ret = True
         except Exception,e:
-            print type(e)
-            self.logger.error('except')
+            self.logger.error(type(e))
             self.logger.error(e.__args__)
+            ret = False
         finally:
             ########################################
             # clean up directory
             #
             self.clean_directory(self.options.version)
-            return
+            return ret
 
 
-    def check_version(self, version, check_file):
+    def is_available_version(self, version):
         """
         check whether specified version is available or not
         """
         self.logger.info('start check available version')
-        file_path =  os.path.join(self.llvmenv_home, 'etc', check_file)
+        file_path =  os.path.join(self.llvmenv_home, 'etc', 'versions')
         ########################################
         # check file exists or not 
         #
         if os.path.exists(file_path) == False:
-            return False
+            self.logger.error('file %s was not found' % file_path)
+            return None
         
         ########################################
         # check version
         #
-        for line in open(file_path):
-            if version == line.rstrip():
-                return True
-        return False
+        with open(file_path) as f:
+            versions = json.loads(f.read(), encoding = 'utf-8')
+            if versions.has_key(version):
+                return versions[version]
+            else:
+                return None
 
 
-    def checkout(self, repo_base, version, target_dir):
+    def checkout(self, repo, version, target_dir):
         """
         """
         self.logger.info('start check out')
-        if version == 'trunk':
-            repo = repo_base + version
-        else:
-            repo = repo_base + '/tags/' + version
         cmd = ['svn', 'co']
         args = []
         args.append(repo)
@@ -161,7 +167,7 @@ class InstallSubcommand():
 
         return True
 
-    def checkout_all(self, version):
+    def checkout_all(self, version, urls):
         """
         checkout specified version
         """
@@ -178,48 +184,41 @@ class InstallSubcommand():
         ########################################
         # checkout llvm
         #
-        repo_base = 'http://llvm.org/svn/llvm-project/llvm/'
         llvm = os.path.join(self.llvmenv_home, 'llvm_build', version , 'llvm')
-        print llvm
-        self.checkout(repo_base, version.replace('.','/'), llvm)
+        self.checkout(urls['llvm'], version.replace('.','/'), llvm)
 
         ########################################
         # checkout clang
         #
-        repo_base = 'http://llvm.org/svn/llvm-project/cfe/'
         clang = os.path.join(llvm, 'tools', 'clang')
-        self.checkout(repo_base, version.replace('.', '/'), clang)
+        self.checkout(urls['clang'], version.replace('.', '/'), clang)
         
         ########################################
         # checkout compiler-rt
         #
-        repo_base = 'http://llvm.org/svn/llvm-project/compiler-rt/'
         compiler_rt = os.path.join(llvm, 'projects', 'compiler-rt')
-        self.checkout(repo_base, version.replace('.', '/'), compiler_rt)
+        self.checkout(urls['compiler-rt'], version.replace('.', '/'), compiler_rt)
 
 
-        if self.options.use_libcxx == True:
+        if self.options.use_libcxx == True and urls['libcxx']:
             ########################################
             # checkout libc++
             #
-            repo_base = 'http://llvm.org/svn/llvm-project/libcxx/'
             libcxx = os.path.join(llvm, 'projects', 'libcxx')
-            self.checkout(repo_base, version.replace('.', '/'), libcxx)
+            self.checkout(urls['libcxx'], version.replace('.', '/'), libcxx)
 
-        if self.options.use_libcxxabi == True:
+        if self.options.use_libcxxabi == True and urls['libcxxabi']:
             ########################################
             # checkout libc++abi
             #
-            repo_base = 'http://llvm.org/svn/llvm-project/libcxxabi/'
-            libcxx = os.path.join(llvm, 'projects', 'libcxxabi')
-            self.checkout(repo_base, version.replace('.', '/'), libcxx)
+            libcxxabi = os.path.join(llvm, 'projects', 'libcxxabi')
+            self.checkout(urls['libcxxabi'], version.replace('.', '/'), libcxxabi)
 
 
         ########################################
         # clang-extra-tools
         #
-        if self.check_version(version, 'clang_extra_versions'):
-            repo_base = 'http://llvm.org/svn/llvm-project/clang-tools-extra/'
+        if urls['clang-extra']:
             extra = os.path.join(llvm, 'tools', 'clang', 'tools', 'extra')
             self.checkout(repo_base, version.replace('.', '/'), extra)
 

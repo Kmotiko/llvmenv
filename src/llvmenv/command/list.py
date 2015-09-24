@@ -1,4 +1,5 @@
 import os
+import json
 from llvmenv.lib import common
 
 class ListSubcommand():
@@ -23,7 +24,7 @@ class ListSubcommand():
         """
         output available version
         """
-        file_path =  self.llvmenv_home + '/etc/available_versions'
+        file_path =  os.path.join(self.llvmenv_home, 'etc', 'versions')
 
         ########################################
         # check file exists or not 
@@ -34,8 +35,10 @@ class ListSubcommand():
         ########################################
         # print out list
         # 
-        for line in open(file_path):
-            print line.rstrip()
+        with open(file_path) as f:
+            versions = json.loads(f.read(), encoding = 'utf-8')
+            for version in sorted(versions.keys()):
+                print version
         return True
 
     def list_installed(self):

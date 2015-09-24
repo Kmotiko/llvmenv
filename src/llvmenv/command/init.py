@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from llvmenv.lib import common
@@ -33,36 +34,58 @@ class InitSubcommand():
         self.logger.info( 'check available release version')
 
         llvmenv_home = os.getenv('LLVMENV_HOME')
+        llvm_base_url = 'http://llvm.org/svn/llvm-project/llvm/tags'
+        clang_base_url = 'http://llvm.org/svn/llvm-project/cfe/tags'
+        extra_base_url = 'http://llvm.org/svn/llvm-project/clang-tools-extra/tags'
+        compiler_rt_base_url = 'http://llvm.org/svn/llvm-project/compiler-rt/tags'
+        libcxx_base_url = 'http://llvm.org/svn/llvm-project/libcxx/tags'
+        libcxxabi_base_url = 'http://llvm.org/svn/llvm-project/libcxxabi/tags'
 
         ########################################
         # check llvm tags
         #
         cmd = ['svn', 'ls']
-        args = ['http://llvm.org/svn/llvm-project/llvm/tags']
+        args = [llvm_base_url]
         ret, llvm_out = common.exec_command(cmd + args)
         if ret == False:
-            self.logger.error(out)
+            self.logger.error(llvm_out)
             return ret
 
         ########################################
         # check clang tags
         #
         cmd = ['svn', 'ls']
-        args = ['http://llvm.org/svn/llvm-project/cfe/tags']
+        args = [clang_base_url]
         ret, clang_out = common.exec_command(cmd + args)
         if ret == False:
-            self.logger.error(out)
+            self.logger.error(clang_out)
             return ret
         
         ########################################
         # check compiler-rt tags
         #
         cmd = ['svn', 'ls']
-        args = ['http://llvm.org/svn/llvm-project/compiler-rt/tags']
+        args = [compiler_rt_base_url]
         ret, compiler_rt_out = common.exec_command(cmd + args)
         if ret == False:
-            self.logger.error(out)
+            self.logger.error(compiler_rt_out)
             return ret
+
+        def check_sub_dir(base_url, directories, ignore = ''):
+            ver_map = {}
+            for x in directories:
+                ver_map[x] = []
+                cmd = ['svn', 'ls']
+                args = [base_url + '/' + x]
+                ret, out = common.exec_command(cmd + args)
+                if ret == False:
+                    self.logger.error(out)
+                    continue
+                for line in out.split('\n'):
+                    split_line = line.split('/')
+                    ver_map[x].append(split_line[0])
+            return ver_map
+
         
 
         ########################################
@@ -71,69 +94,83 @@ class InitSubcommand():
         file_path =  os.path.join(llvmenv_home , 'etc','available_versions')
         list_file = open(file_path, 'w')
         list_file.write('trunk\n')
-        releases = [ x for x in llvm_out.split('\n') if x in clang_out.split('\n') and x in compiler_rt_out.split('\n')]
-        for line in releases:
-            release_ver = line.split('/')[0]
+        llvm_releases = [ x.split('/')[0] for x in llvm_out.split('\n') if x in clang_out.split('\n') and x in compiler_rt_out.split('\n') and not x.startswith('Apple')]
+        version_map = {
+                'trunk':{
+                    'llvm': 'http://llvm.org/svn/llvm-project/llvm/trunk',
+                    'clang': 'http://llvm.org/svn/llvm-project/cfe/trunk',
+                    'clang-extra': 'http://llvm.org/svn/llvm-project/clang-tools-extra/trunk',
+                    'compiler-rt': 'http://llvm.org/svn/llvm-project/compiler-rt/trunk',
+                    'libcxx': 'http://llvm.org/svn/llvm-project/libcxx/trunk',
+                    'libcxxabi': 'http://llvm.org/svn/llvm-project/libcxxabi/trunk'
+                }
+            }
 
-            ########################################
-            # ignore Apple
-            #
-            if release_ver == 'Apple':
-                continue
 
-            ########################################
-            # check sub dir
-            # Now, only check llvm repository
-            #
-            cmd = ['svn', 'ls']
-            args = ['http://llvm.org/svn/llvm-project/llvm/tags/' + release_ver]
-            ret, llvm_out = common.exec_command(cmd + args)
-            if ret == False:
-                self.logger.error(out)
-                return ret
-            for line in llvm_out.split('\n'):
-                split_line = line.split('/')
+        ########################################
+        #
+        #
+        llvm_versions = check_sub_dir(llvm_base_url, llvm_releases)
+        for version in llvm_versions.keys():
+            for sub_ver in llvm_versions[version]:
+                version_map[version + '.' + sub_ver] = {}
+                version_map[version + '.' + sub_ver]['llvm'] = llvm_base_url + '/' + version + '/' + sub_ver
+                version_map[version + '.' + sub_ver]['clang'] = clang_base_url + '/' + version + '/' + sub_ver
+                version_map[version + '.' + sub_ver]['clang-extra'] = ''
+                version_map[version + '.' + sub_ver]['compiler-rt'] = compiler_rt_base_url + '/' + version + '/' + sub_ver
+                version_map[version + '.' + sub_ver]['libcxx'] = ''
+                version_map[version + '.' + sub_ver]['libcxxabi'] = ''
 
-                ########################################
-                # output to file
-                #
-                list_file.write(release_ver + '.' + split_line[0]+ '\n')
-        
 
         ########################################
         # check clang-tools-extra tags
         #
-        file_path =  os.path.join(llvmenv_home , 'etc','clang_extra_versions')
-        list_file = open(file_path, 'w')
-        list_file.write('trunk\n')
         cmd = ['svn', 'ls']
-        args = ['http://llvm.org/svn/llvm-project/clang-tools-extra/tags']
+        args = [extra_base_url]
         ret, extra_out = common.exec_command(cmd + args)
         if ret == False:
-            self.logger.error(out)
+            self.logger.error(extra_out)
             return ret
+        releases = [ x.split('/')[0] for x in extra_out.split('\n')]
+        for version in releases:
+            for sub_ver in llvm_versions[version]:
+                version_map[version + '.' + sub_ver]['clang-extra'] = extra_base_url + '/' + version + '/' + sub_ver
         
-        for line in extra_out.split('\n'):
-            extra_ver = line.split('/')[0]
 
-            ########################################
-            # check sub dir
-            #
-            cmd = ['svn', 'ls']
-            args = ['http://llvm.org/svn/llvm-project/llvm/tags/' + extra_ver]
-            ret, extra_out = common.exec_command(cmd + args)
-            if ret == False:
-                self.logger.error(out)
-                return ret
-            for line in extra_out.split('\n'):
-                split_line = line.split('/')
-
-                ########################################
-                # output to file
-                #
-                list_file.write(extra_ver + '.' + split_line[0] + '\n')
+        ########################################
+        # check libcxx tags
+        #
+        cmd = ['svn', 'ls']
+        args = [libcxx_base_url]
+        ret, libcxx_out = common.exec_command(cmd + args)
+        if ret == False:
+            self.logger.error(libcxx_out)
+            return ret
+        releases = [ x.split('/')[0] for x in libcxx_out.split('\n') if x.startswith('RELEASE')]
+        for version in releases:
+            for sub_ver in llvm_versions[version]:
+                version_map[version + '.' + sub_ver]['libcxx'] = libcxx_base_url + '/' + version + '/' + sub_ver
         
-        list_file.close()
+        ########################################
+        # check licxxabi tags
+        #
+        cmd = ['svn', 'ls']
+        args = [libcxxabi_base_url]
+        ret, libcxxabi_out = common.exec_command(cmd + args)
+        if ret == False:
+            self.logger.error(libcxxabi_out)
+            return ret
+        releases = [ x.split('/')[0] for x in libcxxabi_out.split('\n') if x.startswith('RELEASE')]
+        for version in releases:
+            for sub_ver in llvm_versions[version]:
+                version_map[version + '.' + sub_ver]['libcxxabi'] = libcxxabi_base_url + '/' + version + '/' + sub_ver
+
+        ########################################
+        # output json
+        #
+        text = json.dumps(version_map, sort_keys=True, ensure_ascii=False, indent=2)
+        with open(os.path.join(llvmenv_home, 'etc', 'versions'), 'w') as f:
+            f.write(text.encode('utf-8'))
         self.logger.info( 'save available version list')
         return
 
