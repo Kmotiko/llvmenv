@@ -91,9 +91,6 @@ class InitSubcommand():
         ########################################
         # output available release branches
         #
-        file_path =  os.path.join(llvmenv_home , 'etc','available_versions')
-        list_file = open(file_path, 'w')
-        list_file.write('trunk\n')
         llvm_releases = [ x.split('/')[0] for x in llvm_out.split('\n') if x in clang_out.split('\n') and x in compiler_rt_out.split('\n') and not x.startswith('Apple')]
         version_map = {
                 'trunk':{
