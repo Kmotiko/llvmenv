@@ -79,8 +79,6 @@ def main():
     llvmenv_home = os.getenv('LLVMENV_HOME')
     config=common.load_config(os.path.join(llvmenv_home, 'etc', 'llvmenv.conf'))
     common.init_logger(config.get('default', 'log_level'), os.path.join(llvmenv_home, 'llvmenv.log'))
-    #config=common.load_yaml(os.path.join(llvmenv_home, 'etc', 'config.yml'))
-    #common.init_logger(config['common']['log_level'], os.path.join(llvmenv_home, 'llvmenv.log'))
 
     #######################################
     # parse
