@@ -21,7 +21,7 @@ class UseSubcommand():
         installed = os.listdir(self.llvmenv_home + '/llvms/')
         if not use_version in installed:
             self.logger.error('%s is not installed yet' % use_version)
-            return
+            return False
         
         ########################################
         # update rc file
@@ -32,7 +32,7 @@ class UseSubcommand():
         # create sim link
         #
         self.create_link(use_version, self.options.suffix)
-        return
+        return True
 
     def update_version(self, version):
         """

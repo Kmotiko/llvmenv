@@ -22,10 +22,18 @@ class InitSubcommand():
         """
         if self.options.update_version :
             self.logger.info( 'start initialize version list')
-            self.get_list()
+            try:
+                self.get_list()
+                return True
+            except Exception, e:
+                self.logger.info(type(e))
+                return False
         else:
-            self.__print_script()
-        return
+            try:
+                self.__print_script()
+                return True
+            except Exception, e:
+                return False
 
     def get_list(self): 
         """
@@ -171,7 +179,7 @@ class InitSubcommand():
         with open(os.path.join(llvmenv_home, 'etc', 'versions'), 'w') as f:
             f.write(text.encode('utf-8'))
         self.logger.info( 'save available version list')
-        return
+        return True
 
     def __print_script(self):
         llvmenv_home = os.getenv('LLVMENV_HOME')

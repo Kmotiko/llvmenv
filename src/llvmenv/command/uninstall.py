@@ -27,7 +27,7 @@ class UninstallSubcommand:
         installed = os.listdir(llvmenv_home + '/llvms/')
         if not target_version in installed:
             self.logger.error('%s is not installed yet' % target_version)
-            return
+            return False
 
         ########################################
         # remove installed directory
@@ -47,4 +47,4 @@ class UninstallSubcommand:
         self.logger.info('remove build directory of version %s' % target_version)
         common.remove_dir(os.path.join(llvmenv_home , 'llvm_build', target_version))
         
-        return
+        return True
