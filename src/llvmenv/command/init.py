@@ -13,27 +13,19 @@ class InitSubcommand():
         """
         run command
         """
-        self.init()
-        return
-
-    def init(self): 
-        """
-        exec initialize ... 
-        """
         if self.options.update_version :
             self.logger.info( 'start initialize version list')
             try:
                 self.get_list()
-                return True
             except Exception, e:
                 self.logger.info(type(e))
                 return False
         else:
             try:
                 self.__print_script()
-                return True
             except Exception, e:
                 return False
+        return True
 
     def get_list(self): 
         """
