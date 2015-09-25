@@ -166,6 +166,8 @@ class InitSubcommand():
         # output json
         #
         text = json.dumps(version_map, sort_keys=True, ensure_ascii=False, indent=2)
+        if(not os.path.exists(os.path.join(llvmenv_home, 'etc'))):
+            os.makedirs(os.path.join(llvmenv_home, 'etc'))
         with open(os.path.join(llvmenv_home, 'etc', 'versions'), 'w') as f:
             f.write(text.encode('utf-8'))
         self.logger.info( 'save available version list')
