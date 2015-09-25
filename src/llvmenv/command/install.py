@@ -220,7 +220,7 @@ class InstallSubcommand():
         #
         if urls['clang-extra']:
             extra = os.path.join(llvm, 'tools', 'clang', 'tools', 'extra')
-            self.checkout(repo_base, version.replace('.', '/'), extra)
+            self.checkout(urls['clang-extra'], version.replace('.', '/'), extra)
 
         return
 
