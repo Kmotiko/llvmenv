@@ -77,9 +77,10 @@ def main():
     # init logger and load config
     #
     llvmenv_home = os.getenv('LLVMENV_HOME')
+    llvmenv_root = os.getenv('LLVMENV_ROOT') if os.getenv('LLVMENV_ROOT') else os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if not os.path.exists(llvmenv_home):
         os.makedirs(llvmenv_home)
-    file_path = os.path.join(llvmenv_home, 'etc', 'llvmenv.conf')
+    file_path = os.path.join(llvmenv_root, 'etc', 'llvmenv.conf')
     log_level = common.load_config(file_path).get('default', 'log_level') if os.path.isfile(file_path) else 'info'
     common.init_logger(log_level,  os.path.join(llvmenv_home, 'llvmenv.log'))
 
