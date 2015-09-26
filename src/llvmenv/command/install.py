@@ -200,14 +200,14 @@ class InstallSubcommand():
         self.checkout(urls['compiler-rt'], version.replace('.', '/'), compiler_rt)
 
 
-        if self.options.use_libcxx == True and urls['libcxx']:
+        if self.options.with_libcxx == True and urls['libcxx']:
             ########################################
             # checkout libc++
             #
             libcxx = os.path.join(llvm, 'projects', 'libcxx')
             self.checkout(urls['libcxx'], version.replace('.', '/'), libcxx)
 
-        if self.options.use_libcxxabi == True and urls['libcxxabi']:
+        if self.options.with_libcxxabi == True and urls['libcxxabi']:
             ########################################
             # checkout libc++abi
             #
