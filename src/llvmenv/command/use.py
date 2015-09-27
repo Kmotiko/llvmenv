@@ -41,6 +41,8 @@ class UseSubcommand():
         ########################################
         #
         #
+        if not os.path.exists(os.path.join(self._llvmenv_home, 'etc')):
+            os.makedirs(os.path.join(self._llvmenv_home, 'etc'))
         version_file = os.path.join(self._llvmenv_home, 'etc', 'version')
         with open(version_file, 'w') as f:
             f.write('%s' % version)
