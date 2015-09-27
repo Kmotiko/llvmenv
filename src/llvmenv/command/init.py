@@ -6,32 +6,32 @@ from llvmenv.lib import common
 
 class InitSubcommand():
     def __init__(self, opts):
-        self.logger=common.get_logger()
-        self.options = opts
+        self._logger=common.get_logger()
+        self._options = opts
 
     def run(self):
         """
         run command
         """
-        if self.options.update_version :
-            self.logger.info( 'start initialize version list')
+        if self._options.update_version :
+            self._logger.info( 'start initialize version list')
             try:
-                self.get_list()
+                self._get_list()
             except Exception, e:
-                self.logger.info(type(e))
+                self._logger.info(type(e))
                 return False
         else:
             try:
-                self.__print_script()
+                self._print_script()
             except Exception, e:
                 return False
         return True
 
-    def get_list(self): 
+    def _get_list(self): 
         """
         check release version and output it
         """
-        self.logger.info( 'check available release version')
+        self._logger.info( 'check available release version')
 
         llvmenv_home = os.getenv('LLVMENV_HOME')
         llvm_base_url = 'http://llvm.org/svn/llvm-project/llvm/tags'
@@ -48,7 +48,7 @@ class InitSubcommand():
         args = [llvm_base_url]
         ret, llvm_out = common.exec_command(cmd + args)
         if ret == False:
-            self.logger.error(llvm_out)
+            self._logger.error(llvm_out)
             return ret
 
         ########################################
@@ -58,7 +58,7 @@ class InitSubcommand():
         args = [clang_base_url]
         ret, clang_out = common.exec_command(cmd + args)
         if ret == False:
-            self.logger.error(clang_out)
+            self._logger.error(clang_out)
             return ret
         
         ########################################
@@ -68,7 +68,7 @@ class InitSubcommand():
         args = [compiler_rt_base_url]
         ret, compiler_rt_out = common.exec_command(cmd + args)
         if ret == False:
-            self.logger.error(compiler_rt_out)
+            self._logger.error(compiler_rt_out)
             return ret
 
         def check_sub_dir(base_url, directories, ignore = ''):
@@ -79,7 +79,7 @@ class InitSubcommand():
                 args = [base_url + '/' + x]
                 ret, out = common.exec_command(cmd + args)
                 if ret == False:
-                    self.logger.error(out)
+                    self._logger.error(out)
                     continue
                 for line in out.split('\n'):
                     split_line = line.split('/')
@@ -126,7 +126,7 @@ class InitSubcommand():
         args = [extra_base_url]
         ret, extra_out = common.exec_command(cmd + args)
         if ret == False:
-            self.logger.error(extra_out)
+            self._logger.error(extra_out)
             return ret
         releases = [ x.split('/')[0] for x in extra_out.split('\n')]
         for version in releases:
@@ -141,7 +141,7 @@ class InitSubcommand():
         args = [libcxx_base_url]
         ret, libcxx_out = common.exec_command(cmd + args)
         if ret == False:
-            self.logger.error(libcxx_out)
+            self._logger.error(libcxx_out)
             return ret
         releases = [ x.split('/')[0] for x in libcxx_out.split('\n') if x.startswith('RELEASE')]
         for version in releases:
@@ -155,7 +155,7 @@ class InitSubcommand():
         args = [libcxxabi_base_url]
         ret, libcxxabi_out = common.exec_command(cmd + args)
         if ret == False:
-            self.logger.error(libcxxabi_out)
+            self._logger.error(libcxxabi_out)
             return ret
         releases = [ x.split('/')[0] for x in libcxxabi_out.split('\n') if x.startswith('RELEASE')]
         for version in releases:
@@ -170,28 +170,28 @@ class InitSubcommand():
             os.makedirs(os.path.join(llvmenv_home, 'etc'))
         with open(os.path.join(llvmenv_home, 'etc', 'versions'), 'w') as f:
             f.write(text.encode('utf-8'))
-        self.logger.info( 'save available version list')
+        self._logger.info( 'save available version list')
         return True
 
-    def __print_script(self):
+    def _print_script(self):
         llvmenv_home = os.getenv('LLVMENV_HOME')
         #############################################
         # print export
         #
-        self.__print_export_env()
+        self._print_export_env()
 
         #############################################
         # print llvmenv_func
         #
-        self.__print_llvmenv_func()
+        self._print_llvmenv_func()
 
         #############################################
         # print completion
         #
-        self.__print_complete_sh(llvmenv_home)
+        self._print_complete_sh(llvmenv_home)
         return
 
-    def __print_export_env(self):
+    def _print_export_env(self):
         llvmenv_home = os.getenv('LLVMENV_HOME')
         home = os.getenv('HOME')
         if not llvmenv_home:
@@ -199,7 +199,7 @@ class InitSubcommand():
         print 'export PATH=\"%s:${PATH}\"' % os.path.join(llvmenv_home, 'links')
         return
 
-    def __print_llvmenv_func(self):
+    def _print_llvmenv_func(self):
         shell = os.getenv('SHELL')
         print 'llvmenv() {'
         print '  case $1 in'
@@ -212,7 +212,7 @@ class InitSubcommand():
         print '}'
         return
 
-    def __print_complete_sh(self, llvmenv_home):
+    def _print_complete_sh(self, llvmenv_home):
         pattern = r"^.*bash.*"
         shell = os.getenv('SHELL')
         if re.match(pattern, shell) :
