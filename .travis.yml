@@ -1,6 +1,7 @@
 language: python
 before_install:
   - sudo apt-get purge cmake
+  - sudo apt-get purge clang*
   - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
   - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
   - sudo sh -c "echo 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main' >> /etc/apt/sources.list"

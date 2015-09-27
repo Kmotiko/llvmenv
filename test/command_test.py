@@ -3,6 +3,7 @@ import logging
 import os
 import pytest
 from subprocess import Popen, PIPE
+import shutil
 import subprocess
 import unittest
 home = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,22 +23,24 @@ class CommandTest(unittest.TestCase):
     def test_all_commands(self):
         """
         """
-        os.environ['LLVMENV_HOME'] =  os.path.join(os.path.dirname(os.path.abspath(__file__)), '.test_home')
-        os.environ['LLVMENV_ROOT'] =  os.path.join(os.path.dirname(os.path.abspath(__file__)), '.test_home')
+        os.environ['LLVMENV_HOME'] = llvmenv_home = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.test_home')
+        os.environ['LLVMENV_ROOT'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.test_home')
+        if os.path.exists(llvmenv_home):
+            shutil.rmtree(llvmenv_home)
 
         sys.argv=['llvmenv', 'init', '--update-version']
         assert llvmenv_main.main() == True
         del logging.getLogger('llvmenv').handlers[:]
 
-        sys.argv=['llvmenv', 'install', 'RELEASE_34.final', '--opt=-DCMAKE_CXX_COMPILER=clang++-3.6']
+        sys.argv=['llvmenv', 'install', 'RELEASE_350.final', '--opt=-DCMAKE_CXX_COMPILER=clang++-3.6 -DCMAKE_C_COMPILER=clang-3.6']
         assert llvmenv_main.main() == True
         del logging.getLogger('llvmenv').handlers[:]
 
-        sys.argv=['llvmenv', 'use', 'RELEASE_34.final']
+        sys.argv=['llvmenv', 'use', 'RELEASE_350.final']
         assert llvmenv_main.main() == True
         del logging.getLogger('llvmenv').handlers[:]
 
-        sys.argv=['llvmenv', 'uninstall', 'RELEASE_34.final']
+        sys.argv=['llvmenv', 'uninstall', 'RELEASE_350.final']
         assert llvmenv_main.main() == True
 
         # TODO: check more details...
