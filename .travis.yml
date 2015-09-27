@@ -1,5 +1,6 @@
 language: python
 install:
   - pip install tox
+  - sudo apt-get install cmake ninja
 script:
   - tox
