@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import argparse
 import sys
-from llvmenv.lib import downloader
 from llvmenv.lib import common
 from llvmenv.command import init 
 from llvmenv.command  import use
