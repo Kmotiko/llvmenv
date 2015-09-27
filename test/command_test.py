@@ -29,15 +29,15 @@ class CommandTest(unittest.TestCase):
         assert llvmenv_main.main() == True
         del logging.getLogger('llvmenv').handlers[:]
 
-        sys.argv=['llvmenv', 'install', 'RELEASE_370.final']
+        sys.argv=['llvmenv', 'install', 'RELEASE_34.final']
         assert llvmenv_main.main() == True
         del logging.getLogger('llvmenv').handlers[:]
 
-        sys.argv=['llvmenv', 'use', 'RELEASE_370.final']
+        sys.argv=['llvmenv', 'use', 'RELEASE_34.final']
         assert llvmenv_main.main() == True
         del logging.getLogger('llvmenv').handlers[:]
 
-        sys.argv=['llvmenv', 'uninstall', 'RELEASE_370.final']
+        sys.argv=['llvmenv', 'uninstall', 'RELEASE_34.final']
         assert llvmenv_main.main() == True
 
         # TODO: check more details...
