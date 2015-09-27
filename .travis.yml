@@ -2,7 +2,8 @@ language: python
 before_install:
   - sudo apt-get purge cmake
 install:
-  - wget https://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz && tar xzf cmake-3.3.2-Linux-x86_64.tar.gz && sudo cp -fR cmake-3.3.2-Linux-x86_64/* /usr
+  # Now, using --no-check-certificate options...
+  - wget --no-check-certificate https://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz && tar xzf cmake-3.3.2-Linux-x86_64.tar.gz && sudo cp -fR cmake-3.3.2-Linux-x86_64/* /usr
   - pip install tox
   - sudo apt-get update
   - sudo apt-get install ninja-build
