@@ -6,6 +6,6 @@ install:
   - wget --no-check-certificate https://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz && tar xzf cmake-3.3.2-Linux-x86_64.tar.gz && sudo cp -fR cmake-3.3.2-Linux-x86_64/* /usr
   - pip install tox
   - sudo apt-get update
-  - sudo apt-get install ninja-build libatomic-ops-dev libncurses5-dev
+  - sudo apt-get install ninja-build libatomic1 libncurses5-dev
 script:
   - tox
