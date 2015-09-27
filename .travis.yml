@@ -1,7 +1,10 @@
 language: python
+before_install:
+  - sudo apt-get purge cmake
 install:
+  - wget https://cmake.org/files/v3.3/cmake-3.3.2.tar.gz && tar xzf cmake-3.3.2.tar.gz && cd cmake-3.3.2 && ./configure && make && sudo make install
   - pip install tox
   - sudo apt-get update
-  - sudo apt-get install cmake ninja-build
+  - sudo apt-get install ninja-build
 script:
   - tox
