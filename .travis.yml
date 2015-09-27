@@ -1,11 +1,15 @@
 language: python
 before_install:
   - sudo apt-get purge cmake
+  - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
+  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+  - sudo sh -c "echo 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main' >> /etc/apt/sources.list"
+  - sudo sh -c "echo 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main' >> /etc/apt/sources.list"
 install:
   # Now, using --no-check-certificate options...
   - wget --no-check-certificate https://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz && tar xzf cmake-3.3.2-Linux-x86_64.tar.gz && sudo cp -fR cmake-3.3.2-Linux-x86_64/* /usr
   - pip install tox
   - sudo apt-get update
-  - sudo apt-get install ninja-build libatomic-ops-dev libncurses5-dev
+  - sudo apt-get install clang-3.6 ninja-build libatomic-ops-dev libncurses5-dev
 script:
   - tox

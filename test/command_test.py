@@ -29,7 +29,7 @@ class CommandTest(unittest.TestCase):
         assert llvmenv_main.main() == True
         del logging.getLogger('llvmenv').handlers[:]
 
-        sys.argv=['llvmenv', 'install', 'RELEASE_34.final']
+        sys.argv=['llvmenv', 'install', 'RELEASE_34.final', '--opt=\"-DCMAKE_CXX_COMPILER=clang++-3.6\"']
         assert llvmenv_main.main() == True
         del logging.getLogger('llvmenv').handlers[:]
 
