@@ -1,8 +1,6 @@
 LLVMENV
 ==================
 
-[![Build Status](https://travis-ci.org/Kmotiko/llvmenv.svg)](https://travis-ci.org/Kmotiko/llvmenv)
-
 
 # What is this?
 LLVMENV is support tool to install llvm/clang in your environment.  
