@@ -5,7 +5,7 @@ import shutil
 from llvmenv.lib import common
 
 class InstallSubcommand():
-    llvm_opts = {
+    _llvm_opts = {
             "autotools":{
                 "enable_targets": "--enable_targets",
                 "enable_optimized": {
@@ -36,7 +36,7 @@ class InstallSubcommand():
                     False: "OFF"}
                 }
             }
-    clang_opts = {
+    _clang_opts = {
             "cmake":{
                 "build_examples": {
                     "key": "-DCLANG_BUILD_EXAMPLES", 
@@ -47,12 +47,12 @@ class InstallSubcommand():
 
 
     def __init__(self, opts):
-        self.logger=common.get_logger()
-        self.llvmenv_home = os.getenv('LLVMENV_HOME')
-        self.options = opts
+        self._logger=common.get_logger()
+        self._llvmenv_home = os.getenv('LLVMENV_HOME')
+        self._options = opts
 
 
-    def __get_and_extract(self, url, download_dir = '/tmp/', extract_dir = '/tmp/'):
+    def _get_and_extract(self, url, download_dir = '/tmp/', extract_dir = '/tmp/'):
         # downlowd
         target_file = os.path.join(download_dir, os.path.basename(url))
         common.download(url, target_file)
@@ -75,11 +75,11 @@ class InstallSubcommand():
         return
 
 
-    def check_version(self, version, target):
+    def _check_version(self, version, target):
         """
         check whether specified version is available or not
         """
-        self.logger.info('start check available version')
+        self._logger.info('start check available version')
         ########################################
         # check file exists or not 
         #
@@ -89,73 +89,73 @@ class InstallSubcommand():
             return True
 
 
-    def get_all_files(self, version):
+    def _get_all_files(self, version):
         """
         download and extract all files
         """
-        self.logger.info('download all files')
-        download_dir = os.path.join(self.llvmenv_home, 'llvm_build', version, 'files')
+        self._logger.info('download all files')
+        download_dir = os.path.join(self._llvmenv_home, 'llvm_build', version, 'files')
         common.makedirs(download_dir)
 
         ########################################
         # llvm
         #
-        self.logger.info('get llvm files')
+        self._logger.info('get llvm files')
         url = llvm_url.urls[version]['llvm']
-        llvm = os.path.join(self.llvmenv_home, 'llvm_build', version, 'llvm')
-        self.__get_and_extract(url, download_dir, llvm)
+        llvm = os.path.join(self._llvmenv_home, 'llvm_build', version, 'llvm')
+        self._get_and_extract(url, download_dir, llvm)
 
 
         ########################################
         # clang
         #
-        self.logger.info('get clang files')
+        self._logger.info('get clang files')
         url = llvm_url.urls[version]['clang']
         clang = os.path.join(llvm, 'tools', 'clang')
-        self.__get_and_extract(url, download_dir, clang)
+        self._get_and_extract(url, download_dir, clang)
 
         ########################################
         # clang-tool-extra
         #
-        if self.check_version(self.options.version, 'clang-extra'):
-            self.logger.info('get clang-tools-extra files')
+        if self._check_version(self._options.version, 'clang-extra'):
+            self._logger.info('get clang-tools-extra files')
             url = llvm_url.urls[version]['clang-extra']
             clang_extra = os.path.join(llvm, 'tools', 'clang', 'tools', 'extra')
-            self.__get_and_extract(url, download_dir, clang_extra)
+            self._get_and_extract(url, download_dir, clang_extra)
 
         ########################################
         # compiler-rt
         #
-        self.logger.info('get compiler-rt files')
+        self._logger.info('get compiler-rt files')
         url = llvm_url.urls[version]['compiler-rt']
         compiler_rt = os.path.join(llvm, 'projects', 'compiler-rt')
-        self.__get_and_extract(url, download_dir, compiler_rt)
+        self._get_and_extract(url, download_dir, compiler_rt)
 
         ########################################
         # libcxx
         #
-        if self.options.use_libcxx == True:
-            self.logger.info('get libcxx files')
+        if self._options.with_libcxx == True:
+            self._logger.info('get libcxx files')
             url = llvm_url.urls[version]['libcxx']
             libcxx  = os.path.join(llvm, 'projects', 'libcxx')
-            self.__get_and_extract(url, download_dir, libcxx)
+            self._get_and_extract(url, download_dir, libcxx)
 
         ########################################
         # libcxxabi
         #
-        if self.options.use_libcxxabi == True:
-            self.logger.info('get libcxxabi files')
+        if self._options.with_libcxxabi == True:
+            self._logger.info('get libcxxabi files')
             url = llvm_url.urls[version]['libcxxabi']
             libcxxabi  = os.path.join(llvm, 'projects', 'libcxxabi')
-            self.__get_and_extract(url, download_dir, libcxxabi)
+            self._get_and_extract(url, download_dir, libcxxabi)
 
 
-    def configure(self, generator, builder, version):
+    def _configure(self, generator, builder, version):
         """
         exec configure
         """
-        self.logger.info('start configure')
-        build_dir =  os.path.join(self.llvmenv_home, 'llvm_build', version, 'build')
+        self._logger.info('start configure')
+        build_dir =  os.path.join(self._llvmenv_home, 'llvm_build', version, 'build')
 
         ########################################
         # change directory
@@ -165,49 +165,49 @@ class InstallSubcommand():
         ########################################
         # create cmd
         #
-        cmd = [ os.path.join(self.llvmenv_home, 'llvm_build', version, 'llvm', 'configure' )]
+        cmd = [ os.path.join(self._llvmenv_home, 'llvm_build', version, 'llvm', 'configure' )]
         if generator == 'cmake':
             cmd = [generator]
             if builder == 'ninja':
                 cmd.append('-G')
                 cmd.append('Ninja')
             cmd.append('../llvm')
-        args = self.generate_opts(generator, version)
-        self.logger.info('configure option is ... %s' % args)
+        args = self._generate_opts(generator, version)
+        self._logger.info('configure option is ... %s' % args)
         cmd += args
         if common.exec_command_with_call(cmd):
             raise Exception('failed to configure')
         return
 
 
-    def generate_opts(self, generator, version):
+    def _generate_opts(self, generator, version):
         opts = []
-        #if self.options.opt != '':
-        #    opts = self.options.opt.split(' ')
-        install_dir = os.path.join(self.llvmenv_home, 'llvms', version)
+        #if self._options.opt != '':
+        #    opts = self._options.opt.split(' ')
+        install_dir = os.path.join(self._llvmenv_home, 'llvms', version)
         if generator == 'cmake':
             for opt in opts:
                 if opt.startswith('-DCMAKE_INSTALL_PREFIX') :
                     opts.remove(opt)
 
-            opt_map = self.llvm_opts['cmake']
-            copt_map = self.clang_opts['cmake']
+            opt_map = self._llvm_opts['cmake']
+            copt_map = self._clang_opts['cmake']
             # enable_targets
-            opt_str = '%s=%s' % (opt_map['enable_targets'], self.options.enable_targets)
+            opt_str = '%s=%s' % (opt_map['enable_targets'], self._options.enable_targets)
             opts.append(opt_str)
             # build_type
-            opt_str = '%s=%s' % (opt_map['enable_optimized']['key'], opt_map['enable_optimized'][self.options.enable_optimized])
+            opt_str = '%s=%s' % (opt_map['enable_optimized']['key'], opt_map['enable_optimized'][self._options.enable_optimized])
             opts.append(opt_str)
             # enable_assertions
-            opt_str = '%s=%s' % (opt_map['enable_assertions']['key'], opt_map['enable_assertions'][self.options.enable_assertions])
+            opt_str = '%s=%s' % (opt_map['enable_assertions']['key'], opt_map['enable_assertions'][self._options.enable_assertions])
             opts.append(opt_str)
             # build_examples
-            opt_str = '%s=%s' % (opt_map['build_examples']['key'], opt_map['build_examples'][self.options.build_examples])
+            opt_str = '%s=%s' % (opt_map['build_examples']['key'], opt_map['build_examples'][self._options.build_examples])
             opts.append(opt_str)
-            opt_str = '%s=%s' % (copt_map['build_examples']['key'], copt_map['build_examples'][self.options.build_examples])
+            opt_str = '%s=%s' % (copt_map['build_examples']['key'], copt_map['build_examples'][self._options.build_examples])
             opts.append(opt_str)
             # build_tests
-            opt_str = '%s=%s' % (opt_map['build_tests']['key'], opt_map['build_tests'][self.options.build_tests])
+            opt_str = '%s=%s' % (opt_map['build_tests']['key'], opt_map['build_tests'][self._options.build_tests])
             opts.append(opt_str)
             opts.append('-DCMAKE_EXPORT_COMPILE_COMMANDS=ON') 
             opts.append('-DCMAKE_INSTALL_PREFIX=%s' % install_dir)
@@ -217,29 +217,29 @@ class InstallSubcommand():
                 if opt.startswith('--prefix') :
                     opts.remove(opt)
 
-            opt_map = llvm_opts['autotools']
+            opt_map = _llvm_opts['autotools']
             # enable_targets
-            opt_str = '%s=%s' % (opt_map['enable_targets'], self.options.enable_targets)
+            opt_str = '%s=%s' % (opt_map['enable_targets'], self._options.enable_targets)
             opts.append(opt_str)
             ## build_type
-            opt_str = '%s' % (opt_map['enable_optimized'][self.options.enable_optimized])
+            opt_str = '%s' % (opt_map['enable_optimized'][self._options.enable_optimized])
             opts.append(opt_str)
             ## enable_assertions
-            opt_str = '%s' % (opt_map['enable_assertions'][self.options.enable_optimized])
+            opt_str = '%s' % (opt_map['enable_assertions'][self._options.enable_optimized])
             opts.append(opt_str)
             opts.append('--prefix=%s' % install_dir)
 
         return opts
 
-    def make(self, builder, version):
+    def _make(self, builder, version):
         """
         exec make
         """
-        self.logger.info('start build')
+        self._logger.info('start build')
         ########################################
         # change directory
         #
-        build_dir =  os.path.join(self.llvmenv_home, 'llvm_build', version, 'build')
+        build_dir =  os.path.join(self._llvmenv_home, 'llvm_build', version, 'build')
         os.chdir(build_dir)
 
         ########################################
@@ -250,15 +250,15 @@ class InstallSubcommand():
             raise Exception('failed to configure')
         return
 
-    def install(self, builder, version):
+    def _install(self, builder, version):
         """
         exec install
         """
-        self.logger.info('start install')
+        self._logger.info('start install')
         ########################################
         # change directory
         #
-        build_dir =  self.llvmenv_home + '/llvm_build/' + version + '/build'
+        build_dir =  self._llvmenv_home + '/llvm_build/' + version + '/build'
         os.chdir(build_dir)
 
         ########################################
@@ -269,26 +269,26 @@ class InstallSubcommand():
             raise Exception('failed to configure')
         return
 
-    def clean_directory(self, version):
-        self.logger.info('start clean directory')
+    def _clean_directory(self, version):
+        self._logger.info('start clean directory')
         ########################################
         # delete file dir
         #
-        file_dir = os.path.join(self.llvmenv_home, 'llvm_build', version , 'files')
+        file_dir = os.path.join(self._llvmenv_home, 'llvm_build', version , 'files')
         common.remove_dir(file_dir)
 
         ########################################
         # if delete-src is True, delete src dir
         #
-        src_dir = os.path.join(self.llvmenv_home, 'llvm_build', version , 'llvm')
-        if self.options.delete_src == True:
+        src_dir = os.path.join(self._llvmenv_home, 'llvm_build', version , 'llvm')
+        if self._options.delete_src == True:
             common.remove_dir(src_dir)
 
         ########################################
         # if delete-build is True, delete build
         #
-        build_dir = os.path.join(self.llvmenv_home, 'llvm_build', version , 'build')
-        if self.options.delete_build:
+        build_dir = os.path.join(self._llvmenv_home, 'llvm_build', version , 'build')
+        if self._options.delete_build:
             common.remove_dir(build_dir)
         
         return
@@ -297,72 +297,68 @@ class InstallSubcommand():
         """
         run command
         """
+        ret = True
         try:
             ########################################
             # check version
             #
-            if not self.check_version(self.options.version, 'llvm'): 
-                self.logger.error('%s is not available version' % self.options.version)
+            if not self._check_version(self._options.version, 'llvm'): 
+                self._logger.error('%s is not available version' % self._options.version)
                 return
             
             ########################################
             # check exists directory
             #
-            install_dir = os.path.join(self.llvmenv_home , 'llvms' , self.options.version)
+            install_dir = os.path.join(self._llvmenv_home , 'llvms' , self._options.version)
             if os.path.exists(install_dir):
-                self.logger.error('directory %s already exists' % install_dir)
-                self.logger.error('nothing to do')
+                self._logger.error('directory %s already exists' % install_dir)
+                self._logger.error('nothing to do')
                 return
 
-            build_base =  os.path.join(self.llvmenv_home , 'llvm_build' , self.options.version)
+            build_base =  os.path.join(self._llvmenv_home , 'llvm_build' , self._options.version)
             if not os.path.exists( build_base ):
                 os.makedirs(build_base) 
 
             build_dir =  os.path.join(build_base, 'build')
             if os.path.exists(build_dir):
-                self.logger.warn('directory %s already exists' % build_dir)
-                self.logger.warn('try to install from %s' % build_dir)
-
-                self.configure(self.options.generator, self.options.builder)
-                self.make(self.options.builder)
+                self._logger.warn('directory %s already exists' % build_dir)
+                self._logger.warn('try to install from %s' % build_dir)
+            else:
+                ########################################
+                # get files
+                #
+                src_dir =  os.path.join(self._llvmenv_home , 'llvm_build' , self._options.version , 'llvm')
+                if not os.path.exists(src_dir):
+                    self._get_all_files(self._options.version)
+                os.makedirs(build_dir) 
                 os.makedirs(install_dir) 
-                self.install(self.options.builder)
-                return 
-
-            ########################################
-            # get files
-            #
-            src_dir =  os.path.join(self.llvmenv_home , 'llvm_build' , self.options.version , 'llvm')
-            if not os.path.exists(src_dir):
-                self.get_all_files(self.options.version)
             
             ########################################
             # configure
             #
-            os.makedirs(build_dir) 
-            self.configure(self.options.generator, self.options.builder, self.options.version)
+            self._configure(self._options.generator, self._options.builder, self._options.version)
             
             ########################################
             # make
             #
-            self.make(self.options.builder, self.options.version)
+            self._make(self._options.builder, self._options.version)
             
             ########################################
             # make install
             #
-            os.makedirs(install_dir) 
-            self.install(self.options.builder, self.options.version)
+            self._install(self._options.builder, self._options.version)
 
-            return
+            ret = True
 
         except Exception,e:
-            self.logger.error(type(e))
-            self.logger.error(e.__args__)
+            self._logger.error(type(e))
+            self._logger.error(e.__args__)
+            ret = False
 
         finally:
             ########################################
             # clean up directory
             #
-            self.clean_directory(self.options.version)
-            return
+            self._clean_directory(self._options.version)
+            return ret
 
