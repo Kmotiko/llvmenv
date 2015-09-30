@@ -76,20 +76,20 @@ llvmenv install RELEASE_361.final --delete-src --delete-build --enable-optimized
 
 The install sub-command has options described in bellow.
 
-|option                     | describe                                                            | default       |
+|option                     | description                                                         | default       |
 |:--------------------------|:--------------------------------------------------------------------|:--------------|
 |delete-src                 | delete src directory after install                                  | True          |
 |delete-build               | delete build directory after install                                | True          |
-|generator                  | specify generator: gnu or cmake                                     | gnu autotools |
+|generator                  | specify generator: gnu or cmake                                     | cmake         |
 |enable-targets             | specify target architecture to build.                               | host          |
-|enable-optimized           | if true, RELEASE build, otherwise DEBUG build.                      | True(RELEASE) |
-|enable-assertions          | enable assertions or not                                            | False         |
-|build-examples             | build llvm/clang examples or not                                    | True          |
-|build-tests                | build llvm/clang tests or not                                       | True          |
-|opt                        | this parameter will be directory told to configure or cmake command as options| -             |
+|disable-optimized          | If this option specify, LLVM/Clang's build-type is set to DEBUG. Otherwise, set to RELEASE.     | True(RELEASE) |
+|enable-assertions          | enable assertions or not                                            | -             |
+|build-examples             | build llvm/clang examples                                           | -             |
+|build-tests                | build llvm/clang tests                                              | -             |
+|opt                        | This parameter will be directory told to configure or cmake command as options| -             |
 |builder                    | specify builder: make or ninja                                      | make          |
-|use-libcxx                 | set to use-libcxx                                                   | False         |
-|use-libcxxabi              | set to use-libcxxabi                                                | False         |
+|with-libcxx                | set to use-libcxx                                                   | -             |
+|with-libcxxabi             | set to use-libcxxabi                                                | -             |
 
 
 ## Use
