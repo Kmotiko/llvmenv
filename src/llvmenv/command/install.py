@@ -6,10 +6,10 @@ from llvmenv.lib import common
 class InstallSubcommand():
     llvm_opts = {
             "autotools":{
-                "enable_targets": "--enable_targets",
+                "enable_targets": "--enable-targets",
                 "enable_optimized": {
                     True: "--enable-optimized", 
-                    False: "--disable_optimized"},
+                    False: "--disable-optimized"},
                 "enable_assertions": {
                     True: "--enable-assertions", 
                     False: "--disable-assertions"}
@@ -311,6 +311,12 @@ class InstallSubcommand():
         exec make
         """
         self._logger.info('start build')
+
+        ########################################
+        # TODO: validate builder
+        #
+
+
         ########################################
         # change directory
         #
