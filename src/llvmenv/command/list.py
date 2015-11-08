@@ -50,8 +50,9 @@ class ListSubcommand():
         #
         version_file = os.path.join(self._llvmenv_home, 'etc', 'version')
         current_version = ''
-        with open(version_file, 'r') as f:
-            current_version = f.read()
+        if os.path.isfile(version_file):
+            with open(version_file, 'r') as f:
+                current_version = f.read()
 
         ########################################
         # print version
