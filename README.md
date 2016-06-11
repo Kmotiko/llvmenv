@@ -87,7 +87,7 @@ The install sub-command has options described in bellow.
 |build-examples             | build llvm/clang examples                                           | -             |
 |build-tests                | build llvm/clang tests                                              | -             |
 |opt                        | This parameter will be directory told to configure or cmake command as options| -             |
-|builder                    | specify builder: make or ninja                                      | make          |
+|builder                    | specify builder: make or ninja                                      | ninja         |
 |with-libcxx                | set to use-libcxx                                                   | -             |
 |with-libcxxabi             | set to use-libcxxabi                                                | -             |
 
