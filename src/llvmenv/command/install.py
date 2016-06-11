@@ -238,10 +238,19 @@ class InstallSubcommand():
         os.chdir(build_dir)
 
         ########################################
+        # check generator
+        #
+        if generator != 'autotools' and generator != 'cmake':
+            self._logger.warn('unknown generator : %s.' % generator)
+            self._logger.info('use cmake')
+            generator = 'cmake'
+
+        ########################################
         # create cmd
         #
-        cmd = [ os.path.join(self._llvmenv_home, 'llvm_build', version, 'llvm', 'configure' )]
-        if generator == 'cmake':
+        if generator == 'autotools':
+            cmd = [ os.path.join(self._llvmenv_home, 'llvm_build', version, 'llvm', 'configure' )]
+        elif generator == 'cmake':
             cmd = [generator]
             if builder == 'ninja':
                 cmd.append('-G')
