@@ -40,6 +40,7 @@ class InitSubcommand():
         compiler_rt_base_url = 'http://llvm.org/svn/llvm-project/compiler-rt/tags'
         libcxx_base_url = 'http://llvm.org/svn/llvm-project/libcxx/tags'
         libcxxabi_base_url = 'http://llvm.org/svn/llvm-project/libcxxabi/tags'
+        lldb_base_url = 'http://llvm.org/svn/llvm-project/lldb/tags'
 
         ########################################
         # check llvm tags
@@ -99,7 +100,8 @@ class InitSubcommand():
                     'clang-extra': 'http://llvm.org/svn/llvm-project/clang-tools-extra/trunk',
                     'compiler-rt': 'http://llvm.org/svn/llvm-project/compiler-rt/trunk',
                     'libcxx': 'http://llvm.org/svn/llvm-project/libcxx/trunk',
-                    'libcxxabi': 'http://llvm.org/svn/llvm-project/libcxxabi/trunk'
+                    'libcxxabi': 'http://llvm.org/svn/llvm-project/libcxxabi/trunk',
+                    'lldb': 'http://llvm.org/svn/llvm-project/lldb/trunk'
                 }
             }
 
@@ -117,6 +119,7 @@ class InitSubcommand():
                 version_map[version + '.' + sub_ver]['compiler-rt'] = compiler_rt_base_url + '/' + version + '/' + sub_ver
                 version_map[version + '.' + sub_ver]['libcxx'] = ''
                 version_map[version + '.' + sub_ver]['libcxxabi'] = ''
+                version_map[version + '.' + sub_ver]['lldb'] = ''
 
 
         ########################################
@@ -147,7 +150,7 @@ class InitSubcommand():
         for version in releases:
             for sub_ver in llvm_versions[version]:
                 version_map[version + '.' + sub_ver]['libcxx'] = libcxx_base_url + '/' + version + '/' + sub_ver
-        
+
         ########################################
         # check licxxabi tags
         #
@@ -161,6 +164,21 @@ class InitSubcommand():
         for version in releases:
             for sub_ver in llvm_versions[version]:
                 version_map[version + '.' + sub_ver]['libcxxabi'] = libcxxabi_base_url + '/' + version + '/' + sub_ver
+
+        ########################################
+        # check lldb tags
+        #
+        cmd = ['svn', 'ls']
+        args = [lldb_base_url]
+        ret, lldb_out = common.exec_command(cmd + args)
+        if ret == False:
+            self._logger.error(libcxxabi_out)
+            return ret
+        releases = [ x.split('/')[0] for x in lldb_out.split('\n') if x.startswith('RELEASE')]
+        for version in releases:
+            for sub_ver in llvm_versions[version]:
+                version_map[version + '.' + sub_ver]['lldb'] = lldb_base_url + '/' + version + '/' + sub_ver
+
 
         ########################################
         # output json

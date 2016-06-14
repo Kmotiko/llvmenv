@@ -45,7 +45,7 @@ At first, initialize llvm information with following command.
 llvmenv init --update-version
 ```
 
-When running "init --update-version" command, llvmenv get version information about LLVM/Clang/Compiler-rt/Clang-extra-tools using "svn ls" command.  
+When running "init --update-version" command, llvmenv get version information about LLVM/Clang/Compiler-rt/LLDB/Clang-extra-tools using "svn ls" command.  
 Now, you will be able to specify the version when execute install command.  
 
 
@@ -69,7 +69,7 @@ But, install target directory is defined in llvmenv, so prefix option is ignored
 
 ```shell
 # DEBUG build
-llvmenv install RELEASE_361.final --delete-src --delete-build --enable-optimized=False --enable-assertions=True
+llvmenv install RELEASE_361.final --delete-src=false --delete-build=false --enable-optimized=false --enable-assertions=true
 ```
 
 ### Options
@@ -82,14 +82,15 @@ The install sub-command has options described in bellow.
 |delete-build               | delete build directory after install                                | True          |
 |generator                  | specify generator: gnu or cmake                                     | cmake         |
 |enable-targets             | specify target architecture to build.                               | host          |
-|disable-optimized          | If this option specify, LLVM/Clang's build-type is set to DEBUG. Otherwise, set to RELEASE.     | True(RELEASE) |
+|disable-optimized          | If this option specify, LLVM/Clang's build-type is set to DEBUG. Otherwise, set to RELEASE.     | RELEASE |
 |enable-assertions          | enable assertions or not                                            | -             |
 |build-examples             | build llvm/clang examples                                           | -             |
 |build-tests                | build llvm/clang tests                                              | -             |
 |opt                        | This parameter will be directory told to configure or cmake command as options| -             |
 |builder                    | specify builder: make or ninja                                      | ninja         |
-|with-libcxx                | set to use-libcxx                                                   | -             |
-|with-libcxxabi             | set to use-libcxxabi                                                | -             |
+|with-libcxx                | set to use libcxx                                                   | -             |
+|with-libcxxabi             | set to use libcxxabi                                                | -             |
+|with-lldb                  | set to use lldb                                                     | -             |
 
 
 ## Use

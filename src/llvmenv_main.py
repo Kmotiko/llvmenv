@@ -43,6 +43,7 @@ parser_install.add_argument('--generator', type=str, default='cmake', help='spec
 parser_install.add_argument('--builder', type=str, default='ninja', help='specify builder. ninja or make. default is ninja')
 parser_install.add_argument('--with-libcxx', action='store_true', default=False, help='use libcxx as the standard C++ Library')
 parser_install.add_argument('--with-libcxxabi', action='store_true', default=False, help='use libcxxabi as the C++ ABI Library')
+parser_install.add_argument('--with-lldb', action='store_true', default=False, help='install lldb')
 
 
 #######################################

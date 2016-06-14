@@ -200,6 +200,14 @@ class InstallSubcommand():
         self._checkout(urls['compiler-rt'], version.replace('.', '/'), compiler_rt)
 
 
+        if self._options.with_lldb == True and urls['lldb']:
+            ########################################
+            # checkout lldb
+            #
+            lldb = os.path.join(llvm, 'tools', 'lldb')
+            self._checkout(urls['lldb'], version.replace('.', '/'), lldb)
+
+
         if self._options.with_libcxx == True and urls['libcxx']:
             ########################################
             # checkout libc++
