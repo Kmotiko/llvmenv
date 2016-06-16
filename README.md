@@ -69,7 +69,7 @@ But, install target directory is defined in llvmenv, so prefix option is ignored
 
 ```shell
 # DEBUG build
-llvmenv install RELEASE_361.final --delete-src=false --delete-build=false --enable-optimized=false --enable-assertions=true
+llvmenv install RELEASE_361.final --delete-src=false --delete-build=false --distable-optimized --enable-assertions=true
 ```
 
 ### Options
