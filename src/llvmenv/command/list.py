@@ -57,13 +57,13 @@ class ListSubcommand():
         ########################################
         # print version
         #
-        dir_path =  self._llvmenv_home + '/llvms/'
-        dir_path =  self._llvmenv_home + '/llvms/'
-        for version in os.listdir(dir_path):
-            if version.startswith('.') :
-                continue
-            elif version == current_version:
-                print '* %s' % version
-            else:
-                print '  %s' % version
+        dir_path =  os.path.join(self._llvmenv_home, 'llvms')
+        if os.path.isdir(dir_path):
+            for version in os.listdir(dir_path):
+                if version.startswith('.') :
+                    continue
+                elif version == current_version:
+                    print '* %s' % version
+                else:
+                    print '  %s' % version
         return True
