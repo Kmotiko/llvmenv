@@ -77,7 +77,7 @@ _comp_word(){
 _llvmenv_init(){
     opt_word=$1
     opt_len=${#opt_word}
-    COMPREPLY=( `compgen -W "--init --update" -- $1` )
+    COMPREPLY=( `compgen -W "--update-version" -- $1` )
 }
 
 _llvmenv_use(){
