@@ -1,0 +1,119 @@
+#compdef llvmenv
+
+_llvmenv_subcommand(){
+    compadd 'subcommand'  'install'  'uninstall'  'use'  'init' 'list'
+}
+
+_llvmenv_subcommands(){
+    command=${words[2]} 
+    cur_word=${words[$CURRENT]}
+    case $command in
+        'install')
+            _llvmenv_install;;
+        'uninstall')
+            if [ $CURRENT -gt 3 ]; then
+                return
+            fi
+            _llvmenv_uninstall;;
+        'init')
+            ######################################
+            # if arg num > 2  return
+            #
+            if [ $CURRENT -gt 3 ]; then
+                return
+            fi
+            # _llvmenv_init $cur_word;;
+            _llvmenv_init;;
+        'use')
+            ######################################
+            # if arg num > 2  return
+            #
+            if [ $CURRENT -gt 3 ]; then
+                return
+            fi
+            _llvmenv_use;;
+        'list')
+            ######################################
+            # if arg num > 2  return
+            #
+            if [ $CURRENT -gt 3 ]; then
+                return
+            fi
+            _llvmenv_list;;
+    esac
+}
+
+_llvmenv_install(){
+    if [ $CURRENT -gt 3 ]; then
+      case ${words[`expr $CURRENT - 1`]} in
+        '--delete-src')
+          _values 'delete-src' 'True' 'False';;
+        '--delete-build')
+          _values 'delete-build' 'True' 'False';;
+        '--enable-targets')
+          _values 'enable-targets' 'x86' 'x86_64' 'arm' 'arm64' 'aarch64' 'all';;
+        '--opt')
+          ;;
+        *)
+          _values 'install' \
+            '--build-exmaples' \
+            '--build-tests' \
+            '--disable-optimized' \
+            '--delete-src' \
+            '--delete-build' \
+            '--enable-assertions' \
+            '--enable-targets' \
+            '--generator' \
+            '--opt' \
+            '--with-libcxx' \
+            '--with-libcxxabi' \
+            '--with-lldb' ;;
+      esac
+    else
+      if [ -r "$LLVMENV_HOME/etc/versions.lst" ]; then
+          for line in `cat $LLVMENV_HOME/etc/versions.lst`
+          do
+              install_versions="$line $install_versions"
+              _values 'install' $line
+          done
+      fi
+    fi
+    return 0
+}
+
+_llvmenv_uninstall(){
+    for version in `ls $LLVMENV_HOME/llvms`
+    do
+      _values 'uninstall' $version
+    done
+    return 1
+}
+
+_llvmenv_init(){
+    _values \
+      'init' \
+      '--update-version'
+    return 0
+}
+
+_llvmenv_use(){
+    _files -W $LLVMENV_HOME/llvms
+    return 0
+}
+
+_llvmenv_list(){
+  _values \
+    'list' \
+    '--all'
+    return 0
+}
+
+_llvmenv(){
+    if [ $CURRENT -eq 2 ]; then
+        _llvmenv_subcommand
+    elif [ $CURRENT -ge 3 ]; then
+        _llvmenv_subcommands
+    fi
+}
+
+compdef _llvmenv llvmenv
