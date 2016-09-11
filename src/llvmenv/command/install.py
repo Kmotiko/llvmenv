@@ -131,7 +131,7 @@ class InstallSubcommand():
         check whether specified version is available or not
         """
         self._logger.info('start check available version')
-        file_path =  os.path.join(self._llvmenv_home, 'etc', 'versions')
+        file_path =  os.path.join(self._llvmenv_home, 'etc', 'versions.json')
         ########################################
         # check file exists or not 
         #

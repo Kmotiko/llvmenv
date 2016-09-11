@@ -186,9 +186,18 @@ class InitSubcommand():
         text = json.dumps(version_map, sort_keys=True, ensure_ascii=False, indent=2)
         if(not os.path.exists(os.path.join(llvmenv_home, 'etc'))):
             os.makedirs(os.path.join(llvmenv_home, 'etc'))
-        with open(os.path.join(llvmenv_home, 'etc', 'versions'), 'w') as f:
+        with open(os.path.join(llvmenv_home, 'etc', 'versions.json'), 'w') as f:
             f.write(text.encode('utf-8'))
-        self._logger.info( 'save available version list')
+        self._logger.info('save available version as json.')
+
+        ########################################
+        # output as list
+        #
+        with open(os.path.join(llvmenv_home, 'etc', 'versions.lst'), 'w') as f:
+            for key in sorted(version_map.keys()):
+                f.write((key + '\n').encode('utf-8'))
+        self._logger.info('save available version as list.')
+
         return True
 
     def _print_script(self):
@@ -231,9 +240,13 @@ class InitSubcommand():
         return
 
     def _print_complete_sh(self, llvmenv_home):
-        pattern = r"^.*bash.*"
+        bash_pattern = r"^.*bash.*"
+        zsh_pattern = r"^.*zsh.*"
         shell = os.getenv('SHELL')
-        if re.match(pattern, shell) :
+        if re.match(bash_pattern, shell) :
             completion = os.path.join(llvmenv_home, 'etc', 'bash_complete.d', 'complete.sh')
+            print 'source %s' % completion
+        elif re.match(zsh_pattern, shell) :
+            completion = os.path.join(llvmenv_home, 'etc', 'zsh-completion', '_llvmenv')
             print 'source %s' % completion
         return
