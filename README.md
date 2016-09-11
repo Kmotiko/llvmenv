@@ -69,7 +69,7 @@ But, install target directory is defined in llvmenv, so prefix option is ignored
 
 ```shell
 # DEBUG build
-llvmenv install RELEASE_361.final --delete-src=false --delete-build=false --disable-optimized --enable-assertions=true
+llvmenv install RELEASE_361.final --delete-src=false --delete-build=false --disable-optimized --enable-assertions
 ```
 
 ### Options
@@ -83,7 +83,7 @@ The install sub-command has options described in bellow.
 |generator                  | specify generator: gnu or cmake                                     | cmake         |
 |enable-targets             | specify target architecture to build.                               | host          |
 |disable-optimized          | If this option specify, LLVM/Clang's build-type is set to DEBUG. Otherwise, set to RELEASE.     | RELEASE |
-|enable-assertions          | enable assertions or not                                            | -             |
+|enable-assertions          | enable assertions                                                   | False         |
 |build-examples             | build llvm/clang examples                                           | -             |
 |build-tests                | build llvm/clang tests                                              | -             |
 |opt                        | This parameter will be directory told to configure or cmake command as options| -             |
