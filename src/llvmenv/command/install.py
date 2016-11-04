@@ -377,7 +377,7 @@ class InstallSubcommand():
             common.remove_dir(src_dir)
 
         ########################################
-        # if delete-build is True, delete build
+        # if delete-obj is True, delete build
         #
         build_dir = os.path.join(self._llvmenv_home, 'llvm_build', version , 'build')
         if self._options.delete_build:

@@ -38,7 +38,7 @@ parser_install.add_argument('--build-examples', action='store_true', default=Fal
 parser_install.add_argument('--build-tests', action='store_true', default=False, help='build llvm tests or not. This argument is available when using cmake.')
 parser_install.add_argument('--opt', type=str, default='', help='configure option. You can use this field to specify configure option directory')
 parser_install.add_argument('--delete-src', type=str2bool, default='True', help='delete checkout src after install')
-parser_install.add_argument('--delete-build', type=str2bool, default='True', help='delete build directory after install')
+parser_install.add_argument('--delete-obj', type=str2bool, default='True', help='delete build directory which include compiled objects after install')
 parser_install.add_argument('--generator', type=str, default='cmake', help='specify generator. cmake or autotools. default is cmake')
 parser_install.add_argument('--builder', type=str, default='ninja', help='specify builder. ninja or make. default is ninja')
 parser_install.add_argument('--with-libcxx', action='store_true', default=False, help='use libcxx as the standard C++ Library')

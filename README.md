@@ -79,7 +79,7 @@ The install sub-command has options described in bellow.
 |option                     | description                                                         | default       |
 |:--------------------------|:--------------------------------------------------------------------|:--------------|
 |delete-src                 | delete src directory after install                                  | True          |
-|delete-build               | delete build directory after install                                | True          |
+|delete-obj                 | delete build directory which include compiled objects after install | True          |
 |generator                  | specify generator: gnu or cmake                                     | cmake         |
 |enable-targets             | specify target architecture to build.                               | host          |
 |disable-optimized          | If this option specify, LLVM/Clang's build-type is set to DEBUG. Otherwise, set to RELEASE.     | RELEASE |
