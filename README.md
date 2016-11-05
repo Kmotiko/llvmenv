@@ -91,6 +91,7 @@ The install sub-command has options described in bellow.
 |with-libcxx                | set to use libcxx                                                   | -             |
 |with-libcxxabi             | set to use libcxxabi                                                | -             |
 |with-lldb                  | set to use lldb                                                     | -             |
+|jobs                       | number of jobs                                                      | 2             |
 
 
 ## Use

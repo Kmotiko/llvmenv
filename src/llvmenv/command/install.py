@@ -343,7 +343,7 @@ class InstallSubcommand():
         ########################################
         # do make
         #
-        cmd = [builder]
+        cmd = [builder, '-j', self._options.jobs]
         if common.exec_command_with_call(cmd):
             raise Exception('failed to configure')
         return

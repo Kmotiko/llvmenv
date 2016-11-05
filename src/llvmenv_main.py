@@ -44,6 +44,7 @@ parser_install.add_argument('--builder', type=str, default='ninja', help='specif
 parser_install.add_argument('--with-libcxx', action='store_true', default=False, help='use libcxx as the standard C++ Library')
 parser_install.add_argument('--with-libcxxabi', action='store_true', default=False, help='use libcxxabi as the C++ ABI Library')
 parser_install.add_argument('--with-lldb', action='store_true', default=False, help='install lldb')
+parser_install.add_argument('--jobs', type=int, default=2, help='number of jobs. default is 2')
 
 
 #######################################
