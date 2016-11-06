@@ -18,8 +18,8 @@ class UseSubcommand():
         ########################################
         # check intalled version
         #
-        installed = os.listdir(self._llvmenv_home + '/llvms/')
-        if not use_version in installed:
+        install_dir = os.path.join(self._llvmenv_home, 'llvms')
+        if (not os.path.isdir(install_dir)) or (not use_version in os.listdir(install_dir)):
             self._logger.error('%s is not installed yet' % use_version)
             return False
         
