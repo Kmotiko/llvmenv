@@ -356,7 +356,7 @@ class InstallSubcommand():
         ########################################
         # change directory
         #
-        build_dir =  self._llvmenv_home + '/llvm_build/' + version + '/build'
+        build_dir =  os.path.join(self._llvmenv_home, 'llvm_build', version, 'build')
         os.chdir(build_dir)
 
         ########################################
@@ -380,7 +380,7 @@ class InstallSubcommand():
         # if delete-obj is True, delete build
         #
         build_dir = os.path.join(self._llvmenv_home, 'llvm_build', version , 'build')
-        if self._options.delete_build:
+        if self._options.delete_obj:
             common.remove_dir(build_dir)
         
         return
